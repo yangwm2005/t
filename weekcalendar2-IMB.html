@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>IMB Week Calendar</title>
+    
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    
+    <style>
+        /* Dropdown Button */
+        .dropbtn {
+            background-color: green;
+            color: white;
+            padding: 1px;
+            font-size: 13px;
+            width:90px;
+            height:25px;
+            border: 2px;
+        }
+
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown Content */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 130px;
+            box-shadow: 1px 1px 2px 0px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 1px 1px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {background-color: #ddd;}
+
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {display: block;}
+
+        /* Change the background color of the dropdown button when the dropdown content is shown */
+        .dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+        /* Simple DIV style */
+        #myDIV {
+            width: 100px;
+            hight: 30px;
+            padding: 0px 0;
+            text-align: center;
+            background-color: lightblue;
+            margin-top: 0px;
+        }
+    </style>
+
+    <script>
+        // Window opening functions
+        function openWin(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=500, height=600");
+        }
+
+        function openWinweek(url) {
+            window.open(url,"_blank","screenX=250, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=1100, height=750");
+        }
+
+        function openWin1(url) {
+            window.open(url,"_blank","screenX=250, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=960, height=800");
+        }
+
+        function openWin2(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=960, height=600");
+        }
+
+        function openWin3(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=1050, height=600");
+        }
+
+        function openWin4(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=500");
+        }
+
+        function openWin5(url) {
+            window.open(url,"_blank","screenX=250, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=520, height=600");
+        }
+
+        function openWinFB(url) {
+            window.open(url,"_blank","screenX=250,screenY=60, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=600, height=700");
+        }
+
+        function openWintimer(url) {
+            window.open(url,"_blank","toolbar=no, location=no, directories=no, status=no, scrollbars=no, resizable=no, copyhistory=0, width=246, height=500, screenX=0,screenY=0");
+        }
+
+        function openWintimer1(url) {
+            window.open(url,"_blank","toolbar=no, location=no, directories=no, status=no, scrollbars=yes, resizable=yes, copyhistory=0, width=246, height=500, screenX=200,screenY=0");
+        }
+
+        function openWintimer2(url) {
+            window.open(url,"_blank","toolbar=no, location=no, directories=no, status=no, scrollbars=yes, resizable=yes, copyhistory=0, width=300, height=600, screenX=0,screenY=0");
+        }
+
+        function openWinConvo(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=980, height=500");
+        }
+
+        function openWinConvos(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=850, height=600");
+        }
+
+        function myFunction() {
+            var x = document.getElementById("myDIV");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+</head>
+
+<body bgcolor="#ffffff">
+<center>
+    <table cellpadding=0 cellspacing=0 border=0 width="1000">
+        <tr valign="top" cellpadding=0 cellspacing=0 border=0 bgcolor="#e5eecc" width="1000">
+            <td align="center">
+                <!-- Google Calendar Add Button -->
+                <div class="dropdown">
+                    <button class="btn btn-warning btn-xs" type="button" data-toggle="dropdown" 
+                    style="width:40px;font-size:12px;height:25;color:white;background-color:blue;" title="Quick Add events to google calendar">+gCal
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu"><center>
+                    <iframe src="https://yangwm2005.github.io/p/gCalnew v12.html" style=" border-width:0" width="500" height="600" frameborder="0" scrolling="yes" resizable="yes"></iframe>
+                    </ul>
+                </div>
+
+                <!-- IMB Calendar Button -->
+                <a class="btn btn-info btn-xs" style="width:35px;height:25px;font-size:12px;color:white;background-color:green;" 
+                href="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&title=IMB&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%237cb342&color=%23a79b8e" style="border:solid 1px #777" target="1stframe"><b>IMB(n)</b></a>
+
+                <a class="btn btn-info btn-xs" style="width:20px;height:25px;font-size:12px;color:white;background-color:green;" 
+                href="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&title=IMB&mode=WEEK&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%237cb342&color=%23a79b8e" style="border:solid 1px #777" target="1stframe"><b>W</b></a>
+
+                <!-- IMB Calendar Button -->
+                <a class="btn btn-info btn-xs" style="width:35px;height:25px;font-size:12px;color:white;background-color:green;" 
+                href="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FTaipei&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23B39DDB" target="1stframe"><b>IMB</b></a>
+
+                <a class="btn btn-info btn-xs" style="width:20px;height:25px;font-size:12px;color:white;background-color:green;" 
+                href="https://calendar.google.com/calendar/embed?mode=WEEK&amp;height=600&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FTaipei&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23B39DDB" target="1stframe"><b>W</b></a>
+
+                <!-- Calendar Plus Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-warning btn-xs" type="button" data-toggle="dropdown" 
+                    style="width:47px;font-size:12px;height:25;color:white;background-color:brown;" 
+                    title="semanticscholar AI search and collections">Cal+
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu"><center>
+                        <input type="button" value="Week Calendars" 
+                        onclick="openWin3('weekcalendar-q.html')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Week Calendars collections">
+                        <input type="button" value="IMB calendar" 
+                        onclick="openWin('IMB Calendar 2024 Fall.png')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="IMB Ali Calendar">
+                        <input type="button" value="NCHU-1" 
+                        onclick="openWin3('https://www.nchu.edu.tw/calendar/#top1')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="NCHU calendar first semester!">
+                        <input type="button" value="NCHU-2" 
+                        onclick="openWin3('https://www.nchu.edu.tw/calendar/#top2')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="NCHU calendar second semester!">
+                        <input type="button" value="g-Cal" 
+                        onclick="openWin3('https://calendar.google.com/calendar/u/0/r')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Googel Calendar!">
+
+                        <br>--Other Calendars--</br>
+                        <input type="button" value="Jorte" 
+                        onclick="openWin3('https://jorte.com/')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Calendar with all event created events for printing">
+                        <input type="button" value="Spike" 
+                        onclick="openWin3('https://spikenow.com/')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Spike way for your Google mail">
+                        <input type="button" value="Twobird" 
+                        onclick="openWin3('https://www.twobird.com/')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Twobirds way for your Google mail">
+                        <br><a class="btn btn-info btn-xs" style="width:60px;height:25px;font-size:12px;" 
+                        href="https://app.any.do/calendar" title="Any.Do Calendar"
+                        target="1stframe"><b>AnyDo</b></a>
+                        <input type="button" value="->" 
+                        onclick="openWinConvos('https://app.any.do/calendar')" 
+                        class="btn btn-warning btn-xs" style="width:20px;height:25px;font-size:10px;" title="go">
+                        <input type="button" value="Notion Cal" 
+                        onclick="openWinConvos('https://calendar.notion.so/')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Notion Calendar">
+                        <input type="button" value="monday" 
+                        onclick="openWin3('https://calendar.mondayapp.com/')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Mondaycalendars!"> 
+                        <input type="button" value="Reminder" 
+                        onclick="openWinConvos('https://www.icloud.com/reminders/')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="iCloud reminder">
+
+                        <br>--Quick form--</br>
+                        <input type="button" value="Cals-quick" 
+                        onclick="openWin3('https://www.calendarsquick.com/printables/download.html?action=customWeekly')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Week plan by month!">
+                        <input type="button" value="Cals-quick" 
+                        onclick="openWin3('https://www.calendarlabs.com/calendars/free-custom-calendar.php')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Month and year calendars!">
+                        <input type="button" value="Productive forms" 
+                        onclick="openWin3('https://www.productiveflourishing.com/p/free-planners')" 
+                        class="btn btn-warning btn-xs" style="width:80px;height:25px;font-size:12px;color:white;background-color:brown;" 
+                        title="Free form to print!">                           
+                    </ul>
+                </div>
+
+                <!-- DayOne Calendar Button -->
+                <a class="btn btn-info btn-xs" style="width:60px;height:25px;font-size:12px;color:white;background-color:green;" 
+                href="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&bgcolor=%23ffffff&title=DayOne%20%26%20Achievements&src=eWFuZ3dtQGVtYWlsLm5jaHUuZWR1LnR3&src=Y19pcDNzZmZhNXM3bDcwaTJiamJkbThsbWJ2NEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZW1haWwubmNodS5lZHUudHdfYnZqcnBxYzhnOGMzMGRnN2ZyYzY4YmJwNGdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=Y19kMWI2MzdvMGpraDJ0bmc2azRiM3Y0MWcwa0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%231100c6&color=%230072c4&color=%23c98f00&color=%239e42b4" 
+                style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no" target="1stframe"><b>DayOne</b></a>
+
+                <a class="btn btn-info btn-xs" style="width:20px;height:25px;font-size:12px;color:white;background-color:green;" 
+                href="https://calendar.google.com/calendar/embed?mode=WEEK&amp;height=600&wkst=1&ctz=Asia%2FTaipei&bgcolor=%23ffffff&title=DayOne%20%26%20Achievements&src=eWFuZ3dtQGVtYWlsLm5jaHUuZWR1LnR3&src=Y19pcDNzZmZhNXM3bDcwaTJiamJkbThsbWJ2NEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZW1haWwubmNodS5lZHUudHdfYnZqcnBxYzhnOGMzMGRnN2ZyYzY4YmJwNGdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=Y19kMWI2MzdvMGpraDJ0bmc2azRiM3Y0MWcwa0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%231100c6&color=%230072c4&color=%23c98f00&color=%239e42b4" 
+                style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no" target="1stframe"><b>W</b></a>
+
+                <!-- Main Calendar Frame -->
+                <iframe name="1stframe" src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&title=IMB&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%237cb342&color=%23a79b8e" style="border:solid 1px #777" 
+               
+                style=" border-width:0 " width="995" height="660" frameborder="0" scrolling="yes" resizable="yes">
+                </iframe>
+            </td>
+        </tr>  
+    </table>
+    (CopyRight @2025 Dr. Wen-Ming Yang NCHU v2)
+</center>
+</body>
+</html>

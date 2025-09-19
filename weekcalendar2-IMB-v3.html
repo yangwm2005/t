@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMB Week Calendar</title>
+    
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #2c6e9b;
+            --secondary-color: #4c9f70;
+            --accent-color: #f5a623;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--dark-text);
+            padding: 8px;
+            margin: 0;
+            font-size: 13px;
+        }
+        
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 12px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 20px;
+            margin: 5px 0;
+        }
+        
+        .header p {
+            margin: 3px 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .calendar-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+        
+        .calendar-group {
+            display: flex;
+            align-items: center;
+            margin: 0 3px;
+            background: #f8f9fa;
+            padding: 3px 6px;
+            border-radius: var(--border-radius);
+        }
+        
+        .calendar-group .btn-cal {
+            margin: 0 1px;
+        }
+        
+        .btn-cal {
+            border-radius: var(--border-radius);
+            padding: 4px 8px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            border: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            height: 26px;
+        }
+        
+        .btn-cal:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary-cal {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+        }
+        
+        .btn-secondary-cal {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+        }
+        
+        .btn-accent-cal {
+            background-color: var(--accent-color);
+            color: var(--light-text);
+        }
+        
+        .btn-week-view {
+            background-color: #3e8e41;
+            color: var(--light-text);
+            width: 28px;
+            padding: 4px;
+        }
+        
+        .dropdown-menu {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 8px;
+            font-size: 12px;
+            min-width: 160px;
+        }
+        
+        .dropdown-item {
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .calendar-frame {
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #eaeaea;
+            font-size: 11px;
+            color: #777;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 5px 0 3px;
+            text-align: center;
+        }
+        
+        .compact-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+        
+        @media (max-width: 768px) {
+            .calendar-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .calendar-group {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 6px;
+            }
+            
+            .btn-cal {
+                margin-bottom: 3px;
+            }
+            
+            .container {
+                padding: 8px;
+            }
+        }
+
+
+    </style>
+
+    <script>
+        // Window opening functions (unchanged from original)
+        function openWin(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=500, height=600");
+        }
+
+        function openWinweek(url) {
+            window.open(url,"_blank","screenX=250, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=1100, height=750");
+        }
+
+        function openWin1(url) {
+            window.open(url,"_blank","screenX=250, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=960, height=800");
+        }
+
+        function openWin2(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=960, height=600");
+        }
+
+        function openWin3(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=1050, height=600");
+        }
+
+        function openWin4(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=500");
+        }
+
+        function openWin5(url) {
+            window.open(url,"_blank","screenX=250, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=520, height=600");
+        }
+
+        function openWinFB(url) {
+            window.open(url,"_blank","screenX=250,screenY=60, toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=no, copyhistory=yes, width=600, height=700");
+        }
+
+        function openWintimer(url) {
+            window.open(url,"_blank","toolbar=no, location=no, directories=no, status=no, scrollbars=no, resizable=no, copyhistory=0, width=246, height=500, screenX=0,screenY=0");
+        }
+
+        function openWintimer1(url) {
+            window.open(url,"_blank","toolbar=no, location=no, directories=no, status=no, scrollbars=yes, resizable=yes, copyhistory=0, width=246, height=500, screenX=200,screenY=0");
+        }
+
+        function openWintimer2(url) {
+            window.open(url,"_blank","toolbar=no, location=no, directories=no, status=no, scrollbars=yes, resizable=yes, copyhistory=0, width=300, height=600, screenX=0,screenY=0");
+        }
+
+        function openWinConvo(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=980, height=500");
+        }
+
+        function openWinConvos(url) {
+            window.open(url,"_blank","toolbar=yes, location=yes, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=850, height=600");
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>IMB Week Calendar</h1>
+            <p>Manage your schedule with integrated calendar views</p>
+        </div>
+        
+        <div class="calendar-controls">
+            <!-- First row of controls -->
+            <div class="compact-row">
+                <!-- Google Calendar Add Button -->
+                <div class="dropdown">
+                    <button class="btn btn-cal btn-accent-cal" type="button" data-toggle="dropdown" title="Quick Add events to google calendar">
+                        <i class="fa fa-google" aria-hidden="true"></i> +gCal
+                    </button>
+                    <ul class="dropdown-menu">
+                        <iframe src="https://yangwm2005.github.io/p/gCalnew v12.html" style="border-width:0" width="500" height="600" frameborder="0" scrolling="yes" resizable="yes"></iframe>
+                    </ul>
+                </div>
+
+                <!-- IMB Calendar Buttons Group -->
+                <div class="calendar-group">
+                    <a class="btn btn-cal btn-primary-cal" href="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&title=IMB&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%237cb342&color=%23a79b8e" target="1stframe">
+                        IMB(A)
+                    </a>
+                    
+                    <a class="btn btn-cal btn-week-view" href="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&title=IMB&mode=WEEK&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%237cb342&color=%23a79b8e" target="1stframe" title="Week View">
+                        W
+                    </a>
+                </div>
+
+                <!-- Alternative IMB Calendar Buttons Group -->
+                <div class="calendar-group">
+                    <a class="btn btn-cal btn-primary-cal" href="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FTaipei&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23B39DDB" target="1stframe">
+                        IMB(B)
+                    </a>
+                    
+                    <a class="btn btn-cal btn-week-view" href="https://calendar.google.com/calendar/embed?mode=WEEK&amp;height=600&wkst=1&bgcolor=%23ffffff&ctz=Asia%2FTaipei&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&color=%23B39DDB" target="1stframe" title="Week View">
+                        W
+                    </a>
+                </div>
+
+                <!-- Calendar Plus Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-cal btn-accent-cal" type="button" data-toggle="dropdown" title="Additional calendar options">
+                        Cal+
+                    </button>
+                    <ul class="dropdown-menu">
+                        <div class="section-title">University Calendars</div>
+                        <a href="#" class="dropdown-item" onclick="openWin3('weekcalendar-q.html')">Week Calendars</a>
+                        <a href="#" class="dropdown-item" onclick="openWin('IMB Calendar 2024 Fall.png')">IMB Calendar</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://www.nchu.edu.tw/calendar/#top1')">NCHU Semester 1</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://www.nchu.edu.tw/calendar/#top2')">NCHU Semester 2</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://calendar.google.com/calendar/u/0/r')">Google Calendar</a>
+                        
+                        <div class="section-title">Other Calendars</div>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://jorte.com/')">Jorte</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://spikenow.com/')">Spike</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://www.twobird.com/')">Twobird</a>
+                        <a href="#" class="dropdown-item" onclick="openWinConvos('https://app.any.do/calendar')">Any.Do</a>
+                        <a href="#" class="dropdown-item" onclick="openWinConvos('https://calendar.notion.so/')">Notion Calendar</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://calendar.mondayapp.com/')">Monday</a>
+                        <a href="#" class="dropdown-item" onclick="openWinConvos('https://www.icloud.com/reminders/')">iCloud Reminder</a>
+                        
+                        <div class="section-title">Printable Forms</div>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://www.calendarsquick.com/printables/download.html?action=customWeekly')">Weekly Plans</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://www.calendarlabs.com/calendars/free-custom-calendar.php')">Custom Calendars</a>
+                        <a href="#" class="dropdown-item" onclick="openWin3('https://www.productiveflourishing.com/p/free-planners')">Productive Forms</a>
+                    </ul>
+                </div>
+
+                <!-- DayOne Calendar Buttons Group -->
+                <div class="calendar-group">
+                    <a class="btn btn-cal btn-secondary-cal" href="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&bgcolor=%23ffffff&title=DayOne%20%26%20Achievements&src=eWFuZ3dtQGVtYWlsLm5jaHUuZWR1LnR3&src=Y19pcDNzZmZhNXM3bDcwaTJiamJkbThsbWJ2NEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZW1haWwubmNodS5lZHUudHdfYnZqcnBxYzhnOGMzMGRnN2ZyYzY4YmJwNGdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=Y19kMWI2MzdvMGpraDJ0bmc2azRiM3Y0MWcwa0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%231100c6&color=%230072c4&color=%23c98f00&color=%239e42b4" target="1stframe">
+                        DayOne
+                    </a>
+                    
+                    <a class="btn btn-cal btn-week-view" href="https://calendar.google.com/calendar/embed?mode=WEEK&amp;height=600&wkst=1&ctz=Asia%2FTaipei&bgcolor=%23ffffff&title=DayOne%20%26%20Achievements&src=eWFuZ3dtQGVtYWlsLm5jaHUuZWR1LnR3&src=Y19pcDNzZmZhNXM3bDcwaTJiamJkbThsbWJ2NEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZW1haWwubmNodS5lZHUudHdfYnZqcnBxYzhnOGMzMGRnN2ZyYzY4YmJwNGdAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=Y19kMWI2MzdvMGpraDJ0bmc2azRiM3Y0MWcwa0Bncm91cC5jYWxlbmRhci5nb29nbLUuY29t&color=%231100c6&color=%230072c4&color=%23c98f00&color=%239e42b4" target="1stframe" title="Week View">
+                        W
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Calendar Frame -->
+        <div class="calendar-frame">
+            <iframe name="1stframe" src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTaipei&showPrint=0&title=IMB&src=ZW1haWwubmNodS5lZHUudHdfMzkzOWMzanJxbGxjdW01MGw4dWhvMGcwMDRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&src=ZW4udGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%237cb342&color=%23a79b8e" 
+            width="100%" height="600" frameborder="0" scrolling="yes" resizable="yes">
+            </iframe>
+        </div>
+        
+        <div class="footer">
+            <p>Copyright © 2025 Dr. Wen-Ming Yang NCHU v3</p>
+        </div>
+    </div>
+</body>
+</html>

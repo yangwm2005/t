@@ -1,0 +1,3182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReferenceHub - Academic Reference Manager</title>
+    <style>
+        :root {
+            --primary-color: #2c5aa0;
+            --primary-light: #4a76c4;
+            --primary-dark: #1a3d7a;
+            --secondary-color: #34495e;
+            --accent-color: #e74c3c;
+            --accent-light: #ff6b6b;
+            --light-color: #f8f9fa;
+            --light-gray: #e9ecef;
+            --medium-gray: #adb5bd;
+            --dark-color: #2c3e50;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--warning-color), var(--success-color));
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            font-size: 2em;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .logo-text p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+        
+        /* Main Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            min-height: 600px;
+        }
+        
+        /* Typography */
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--light-gray);
+            font-size: 1.5em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            color: var(--secondary-color);
+            margin: 20px 0 12px 0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 24px;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 8px;
+            box-shadow: var(--shadow);
+            gap: 4px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .tab:hover {
+            background: var(--light-gray);
+        }
+        
+        .tab.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 4px rgba(44, 90, 160, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--secondary-color);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 0.95em;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .input-with-icon input {
+            padding-left: 40px;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-danger {
+            background: var(--accent-color);
+        }
+        
+        .btn-danger:hover {
+            background: var(--accent-light);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.85em;
+        }
+        
+        /* Tags */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary-light);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .tag:hover {
+            background: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .tag-remove {
+            margin-left: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+        
+        .tag-remove:hover {
+            opacity: 1;
+        }
+        
+        .tag-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        /* References List */
+        .references-container {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 600px;
+            min-height: 200px;
+        }
+        
+        .reference-item {
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: var(--transition);
+            background: white;
+            position: relative;
+        }
+        
+        .reference-item:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .reference-item.selected {
+            border-color: var(--primary-color);
+            background: #f8fafd;
+        }
+        
+        .reference-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+            line-height: 1.4;
+        }
+        
+        .reference-authors {
+            font-style: italic;
+            margin-bottom: 6px;
+            color: var(--secondary-color);
+            font-size: 0.95em;
+        }
+        
+        .reference-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            font-size: 0.85em;
+            color: var(--medium-gray);
+        }
+        
+        .reference-journal {
+            font-weight: 500;
+        }
+        
+        .reference-year {
+            color: var(--primary-color);
+        }
+        
+        .reference-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        /* Search and Filters */
+        .search-filters {
+            background: var(--light-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .search-box {
+            margin-bottom: 16px;
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        /* Export Sections */
+        .export-section, .file-section {
+            background: var(--light-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .export-buttons, .file-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--medium-gray);
+        }
+        
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        /* Popup */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+        
+        .popup-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 900px;
+            height: 85%;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            display: none;
+            animation: popupAppear 0.3s ease;
+        }
+        
+        @keyframes popupAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -48%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        .popup-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .popup-title {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .popup-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .popup-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .popup-content {
+            padding: 24px;
+            height: calc(100% - 76px);
+            overflow-y: auto;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .version {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .export-buttons, .file-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .reference-actions {
+                flex-direction: column;
+            }
+            
+            .reference-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-muted { color: var(--medium-gray); }
+        .mb-0 { margin-bottom: 0; }
+        .mt-20 { margin-top: 20px; }
+        .d-flex { display: flex; }
+        .align-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-10 { gap: 10px; }
+        .w-100 { width: 100%; }
+        
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: var(--border-radius);
+            color: white;
+            font-weight: 500;
+            z-index: 1002;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: var(--success-color);
+        }
+        
+        .notification.error {
+            background: var(--accent-color);
+        }
+        
+        .notification.info {
+            background: var(--info-color);
+        }
+
+        /* Search clear button */
+        .search-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            color: var(--medium-gray);
+            display: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-clear:hover {
+            background: var(--light-gray);
+            color: var(--accent-color);
+        }
+
+        .input-with-icon.has-content .search-clear {
+            display: flex;
+        }
+
+        /* Search results counter */
+        .search-results-info {
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: var(--light-color);
+            border-radius: var(--border-radius);
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        /* Full-page references view */
+        .full-page-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1003;
+            display: none;
+            flex-direction: column;
+        }
+
+        .full-page-view.active {
+            display: flex;
+        }
+
+        .full-page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .full-page-title {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .full-page-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .full-page-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .full-page-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--light-color);
+        }
+
+        .full-page-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .full-page-search {
+            flex: 1;
+        }
+
+        .full-page-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .full-page-references {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .full-page-reference-item {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+
+        .full-page-reference-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .full-page-reference-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+            line-height: 1.4;
+        }
+
+        .full-page-reference-authors {
+            font-style: italic;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+            font-size: 0.95em;
+        }
+
+        .full-page-reference-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            font-size: 0.85em;
+            color: var(--medium-gray);
+        }
+
+        .full-page-reference-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* View toggle button */
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .view-toggle-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .view-toggle-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .view-toggle-btn:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        /* Sort dropdown styling */
+        #full-page-sort {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 8px 12px;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        #full-page-sort:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">📚</div>
+                    <div class="logo-text">
+                        <h1>ReferenceHub</h1>
+                        <p>Professional Academic Reference Manager</p>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-references">0</span>
+                        <span class="stat-label">References</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-tags">0</span>
+                        <span class="stat-label">Tags</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-authors">0</span>
+                        <span class="stat-label">Authors</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="references">
+                <span>📖</span> My Library
+            </div>
+            <div class="tab" data-tab="add-reference">
+                <span>➕</span> Add Reference
+            </div>
+            <div class="tab" data-tab="pubmed-import">
+                <span>🔍</span> PubMed Search
+            </div>
+            <div class="tab" data-tab="export-save">
+                <span>💾</span> Export & Tools
+            </div>
+        </div>
+        
+        <div class="app-container">
+            <div class="sidebar">
+                <div class="tab-content active" id="references-tab">
+                    <h2>My Reference Library</h2>
+                    
+                    <div class="search-filters">
+                        <div class="search-box">
+                            <div class="input-with-icon" id="search-container">
+                                <span class="input-icon">🔍</span>
+                                <input type="text" id="search-input" placeholder="Search references...">
+                                <button type="button" class="search-clear" id="search-clear">×</button>
+                            </div>
+                            <div class="search-results-info" id="search-results-info" style="display: none;">
+                                <!-- Results info will be shown here -->
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <select id="tag-filter">
+                                    <option value="">All tags</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <select id="year-filter">
+                                    <option value="">All years</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-outline w-100" id="open-full-page">
+                            <span>📖</span> Full Page View
+                        </button>
+                    </div>
+                    
+                    <div class="references-container" id="references-container">
+                        <div id="references-list">
+                            <!-- References will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="add-reference-tab">
+                    <h2>Add New Reference</h2>
+                    <form id="add-reference-form">
+                        <div class="form-group">
+                            <label for="title">Title *</label>
+                            <input type="text" id="title" required placeholder="Enter reference title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="authors">Authors *</label>
+                            <input type="text" id="authors" placeholder="Separate with commas" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="journal">Journal/Publication</label>
+                            <input type="text" id="journal" placeholder="Journal name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="year">Publication Year</label>
+                            <input type="number" id="year" min="1900" max="2030" placeholder="YYYY">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="doi">DOI/PubMed ID</label>
+                            <input type="text" id="doi" placeholder="10.xxxx/xxxx">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="url">URL</label>
+                            <input type="url" id="url" placeholder="https://">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="abstract">Abstract</label>
+                            <textarea id="abstract" placeholder="Enter abstract text..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Personal Notes</label>
+                            <textarea id="notes" placeholder="Add your notes..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tags</label>
+                            <div class="tag-input-container">
+                                <input type="text" id="new-tag" placeholder="Add a tag">
+                                <button type="button" id="add-tag-btn" class="btn btn-sm">Add Tag</button>
+                            </div>
+                            <div id="tags-container">
+                                <!-- Tags will be dynamically added here -->
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100">
+                            <span>💾</span> Add Reference
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="tab-content" id="pubmed-import-tab">
+                    <h2>PubMed Import</h2>
+                    
+                    <div class="form-group">
+                        <label>Search PubMed</label>
+                        <div class="d-flex gap-10">
+                            <input type="text" id="pubmed-search" placeholder="Enter search terms...">
+                            <button id="search-pubmed" class="btn btn-warning">Search</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Fetch by PubMed IDs</label>
+                        <div class="d-flex gap-10">
+                            <input type="text" id="pubmed-ids" placeholder="PMID, PMID, ...">
+                            <button id="fetch-by-ids" class="btn btn-warning">Fetch</button>
+                        </div>
+                    </div>
+                    
+                    <div id="pubmed-results">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔍</div>
+                            <p>Enter a search term or PubMed IDs to find references</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="export-save-tab">
+                    <h2>Export & Tools</h2>
+                    
+                    <div class="export-section">
+                        <h3>Export References</h3>
+                        <p class="text-muted">Export your references in standard formats for publications and other reference managers.</p>
+                        <div class="export-buttons">
+                            <button id="export-bibtex" class="btn btn-outline">BibTeX</button>
+                            <button id="export-ris" class="btn btn-outline">RIS</button>
+                            <button id="export-json" class="btn btn-outline">JSON</button>
+                            <button id="export-csv" class="btn btn-outline">CSV</button>
+                        </div>
+                    </div>
+
+                    <div class="file-section">
+                        <h3>Backup & Restore</h3>
+                        <p class="text-muted">Save your library to a file or restore from a previous backup.</p>
+                        <div class="file-buttons">
+                            <button id="save-file" class="btn btn-success">Backup to File</button>
+                            <button id="load-file" class="btn btn-warning">Restore from File</button>
+                            <input type="file" id="file-input" accept=".json" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="file-section">
+                        <h3>Import PubMed Files</h3>
+                        <p class="text-muted">Import references from PubMed export files (XML, MEDLINE, NBIB formats).</p>
+                        <div class="file-buttons">
+                            <button id="import-pubmed-file" class="btn btn-info">Import PubMed File</button>
+                            <input type="file" id="pubmed-file-input" accept=".xml,.medline,.nbib,.txt" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="file-section">
+                        <h3>Data Management</h3>
+                        <p class="text-muted">Clear all references from your local storage. This action cannot be undone.</p>
+                        <div class="file-buttons">
+                            <button id="clear-storage" class="btn btn-danger">Clear All Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <h2>Reference Details</h2>
+                <div id="reference-details">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <h3>No Reference Selected</h3>
+                        <p>Select a reference from your library to view details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p>ReferenceHub - Professional Academic Reference Manager</p>
+                </div>
+                <div class="version">
+                    <p>Version 2.5 | © 2025 Dr. Wen-Ming Yang (Full page view with sorting)</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Popup Window -->
+    <div class="popup-overlay" id="popup-overlay"></div>
+    <div class="popup-window" id="popup-window">
+        <div class="popup-header">
+            <div class="popup-title">Reference Details</div>
+            <button class="popup-close" id="popup-close">&times;</button>
+        </div>
+        <div class="popup-content" id="popup-content">
+            <!-- Popup content will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Full Page References View -->
+    <div class="full-page-view" id="full-page-view">
+        <div class="full-page-header">
+            <div class="full-page-title">My Reference Library - Full View</div>
+            <button class="full-page-close" id="full-page-close">&times;</button>
+        </div>
+        <div class="full-page-content">
+            <div class="full-page-controls">
+                <div class="full-page-search">
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔍</span>
+                        <input type="text" id="full-page-search" placeholder="Search references...">
+                        <button type="button" class="search-clear" id="full-page-search-clear">×</button>
+                    </div>
+                </div>
+                <div class="full-page-stats">
+                    <span id="full-page-results-count">0 references</span>
+                    <select id="full-page-sort" class="btn btn-sm btn-outline" style="padding: 8px 12px; border: 1px solid var(--primary-color);">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="title">Title A-Z</option>
+                        <option value="authors">Authors A-Z</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline" id="full-page-export">Export All</button>
+                </div>
+            </div>
+            <div class="view-toggle">
+                <button class="view-toggle-btn active" data-view="grid">Grid View</button>
+                <button class="view-toggle-btn" data-view="list">List View</button>
+            </div>
+            <div class="full-page-references" id="full-page-references">
+                <!-- References will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Reference Manager with professional features
+        class ReferenceManager {
+            constructor() {
+                this.references = this.loadReferences();
+                this.currentReferenceId = null;
+                this.currentTags = [];
+                this.isEditMode = false;
+                this.originalData = null;
+                
+                this.initializeEventListeners();
+                this.renderReferences();
+                this.updateFilters();
+                this.updateStats();
+                this.setupPopupWindow();
+            }
+            
+            // Show notification
+            showNotification(message, type = 'info') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Update statistics
+            updateStats() {
+                document.getElementById('total-references').textContent = this.references.length;
+                
+                const allTags = [...new Set(this.references.flatMap(ref => ref.tags))];
+                document.getElementById('total-tags').textContent = allTags.length;
+                
+                const allAuthors = [...new Set(this.references.flatMap(ref => ref.authors))];
+                document.getElementById('total-authors').textContent = allAuthors.length;
+            }
+            
+            // Load references from localStorage
+            loadReferences() {
+                const stored = localStorage.getItem('references');
+                return stored ? JSON.parse(stored) : [];
+            }
+            
+            // Save references to localStorage
+            saveReferences() {
+                localStorage.setItem('references', JSON.stringify(this.references));
+                this.updateStats();
+            }
+            
+            // Initialize event listeners
+            initializeEventListeners() {
+                // Tab switching
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        
+                        tab.classList.add('active');
+                        document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                    });
+                });
+
+                // Initialize search functionality
+                this.initializeSearch();
+                
+                // Initialize full-page view functionality
+                this.initializeFullPageView();
+                
+                // Add reference form
+                document.getElementById('add-reference-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addReference();
+                });
+                
+                // Tag management
+                document.getElementById('add-tag-btn').addEventListener('click', () => {
+                    this.addTagToForm();
+                });
+                
+                document.getElementById('new-tag').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.addTagToForm();
+                    }
+                });
+                
+                // Search functionality
+                document.getElementById('search-input').addEventListener('input', (e) => {
+                    this.searchReferences(e.target.value);
+                });
+                
+                // Filter functionality
+                document.getElementById('tag-filter').addEventListener('change', (e) => {
+                    this.filterReferences();
+                });
+                
+                document.getElementById('year-filter').addEventListener('change', (e) => {
+                    this.filterReferences();
+                });
+                
+                // Export functionality
+                document.getElementById('export-bibtex').addEventListener('click', () => {
+                    this.exportReferences('bibtex');
+                });
+                
+                document.getElementById('export-ris').addEventListener('click', () => {
+                    this.exportReferences('ris');
+                });
+                
+                document.getElementById('export-json').addEventListener('click', () => {
+                    this.exportReferences('json');
+                });
+
+                // File operations
+                document.getElementById('save-file').addEventListener('click', () => {
+                    this.saveToFile();
+                });
+                
+                document.getElementById('load-file').addEventListener('click', () => {
+                    document.getElementById('file-input').click();
+                });
+                
+                document.getElementById('file-input').addEventListener('change', (e) => {
+                    this.loadFromFile(e);
+                });
+
+                // PubMed file import
+                document.getElementById('import-pubmed-file').addEventListener('click', () => {
+                    document.getElementById('pubmed-file-input').click();
+                });
+                
+                document.getElementById('pubmed-file-input').addEventListener('change', (e) => {
+                    this.importPubMedFile(e);
+                });
+                
+                // PubMed search
+                document.getElementById('search-pubmed').addEventListener('click', () => {
+                    this.searchPubMed();
+                });
+                
+                document.getElementById('pubmed-search').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchPubMed();
+                    }
+                });
+                
+                // Fetch by PubMed IDs
+                document.getElementById('fetch-by-ids').addEventListener('click', () => {
+                    this.fetchPubMedByIds();
+                });
+                
+                // Clear storage functionality
+                document.getElementById('clear-storage').addEventListener('click', () => {
+                    this.clearStorage();
+                });
+            }
+            
+            // Setup popup window
+            setupPopupWindow() {
+                document.getElementById('popup-close').addEventListener('click', () => {
+                    this.closePopup();
+                });
+                
+                document.getElementById('popup-overlay').addEventListener('click', () => {
+                    this.closePopup();
+                });
+            }
+            
+            // Open popup window
+            openPopup(content) {
+                document.getElementById('popup-content').innerHTML = content;
+                document.getElementById('popup-overlay').style.display = 'block';
+                document.getElementById('popup-window').style.display = 'block';
+            }
+            
+            // Close popup window
+            closePopup() {
+                document.getElementById('popup-overlay').style.display = 'none';
+                document.getElementById('popup-window').style.display = 'none';
+            }
+            
+            // Open PubMed in new window with proper size
+            openPubMed(url) {
+                const width = 1000;
+                const height = 700;
+                const left = (screen.width - width) / 2;
+                const top = (screen.height - height) / 2;
+                
+                window.open(url, 'pubmed', 
+                    `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`);
+            }
+            
+            // Add tag to form
+            addTagToForm() {
+                const tagInput = document.getElementById('new-tag');
+                const tag = tagInput.value.trim();
+                
+                if (tag && !this.currentTags.includes(tag)) {
+                    this.currentTags.push(tag);
+                    this.renderFormTags();
+                    tagInput.value = '';
+                }
+            }
+            
+            // Remove tag from form
+            removeFormTag(tag) {
+                this.currentTags = this.currentTags.filter(t => t !== tag);
+                this.renderFormTags();
+            }
+            
+            // Render tags in form
+            renderFormTags() {
+                const tagsContainer = document.getElementById('tags-container');
+                tagsContainer.innerHTML = this.currentTags.map(tag => `
+                    <span class="tag">
+                        ${tag}
+                        <span class="tag-remove" onclick="referenceManager.removeFormTag('${tag}')">×</span>
+                    </span>
+                `).join('');
+            }
+            
+            // Add a new reference
+            addReference() {
+                const title = document.getElementById('title').value;
+                const authors = document.getElementById('authors').value.split(',').map(a => a.trim());
+                const journal = document.getElementById('journal').value;
+                const notes = document.getElementById('notes').value;
+                const year = document.getElementById('year').value ? parseInt(document.getElementById('year').value) : null;
+                const doi = document.getElementById('doi').value;
+                const url = document.getElementById('url').value;
+                const abstract = document.getElementById('abstract').value;
+                const tags = [...this.currentTags];
+                
+                const newReference = {
+                    id: Date.now().toString(),
+                    title,
+                    authors,
+                    journal,
+                    notes,
+                    year,
+                    doi,
+                    url,
+                    abstract,
+                    tags,
+                    createdAt: new Date().toISOString()
+                };
+                
+                this.references.push(newReference);
+                this.saveReferences();
+                this.renderReferences();
+                this.updateFilters();
+                
+                // Reset form
+                document.getElementById('add-reference-form').reset();
+                this.currentTags = [];
+                this.renderFormTags();
+                
+                // Switch to references tab
+                this.switchToTab('references');
+                
+                // Show success message
+                this.showNotification('Reference added successfully!', 'success');
+            }
+            
+            // Switch to a specific tab
+            switchToTab(tabName) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            }
+            
+            // Sort references
+            sortReferences(references, sortBy = 'newest') {
+                const sorted = [...references];
+                
+                switch(sortBy) {
+                    case 'newest':
+                        return sorted.sort((a, b) => {
+                            // Put references without year at the end
+                            if (!a.year && !b.year) return 0;
+                            if (!a.year) return 1;
+                            if (!b.year) return -1;
+                            return b.year - a.year;
+                        });
+                        
+                    case 'oldest':
+                        return sorted.sort((a, b) => {
+                            // Put references without year at the end
+                            if (!a.year && !b.year) return 0;
+                            if (!a.year) return 1;
+                            if (!b.year) return -1;
+                            return a.year - b.year;
+                        });
+                        
+                    case 'title':
+                        return sorted.sort((a, b) => {
+                            return a.title.localeCompare(b.title);
+                        });
+                        
+                    case 'authors':
+                        return sorted.sort((a, b) => {
+                            const authorA = a.authors[0] || '';
+                            const authorB = b.authors[0] || '';
+                            return authorA.localeCompare(authorB);
+                        });
+                        
+                    default:
+                        return sorted;
+                }
+            }
+            
+            // Render references list
+            renderReferences(filteredReferences = null) {
+                const referencesList = document.getElementById('references-list');
+                const referencesToRender = filteredReferences || this.references;
+                const searchResultsInfo = document.getElementById('search-results-info');
+                
+                // Hide results info when showing all references
+                if (!filteredReferences) {
+                    searchResultsInfo.style.display = 'none';
+                }
+                
+                if (referencesToRender.length === 0) {
+                    referencesList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📚</div>
+                            <h3>No References Found</h3>
+                            <p>${filteredReferences ? 'Try adjusting your search terms' : 'Add your first reference to get started!'}</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                referencesList.innerHTML = referencesToRender.map(ref => `
+                    <div class="reference-item" data-id="${ref.id}">
+                        <div class="reference-title">${ref.title}</div>
+                        <div class="reference-authors">${ref.authors.join(', ')}</div>
+                        <div class="reference-meta">
+                            <span class="reference-journal">${ref.journal || 'No journal'}</span>
+                            ${ref.year ? `<span class="reference-year">${ref.year}</span>` : ''}
+                        </div>
+                        ${ref.tags.length > 0 ? `
+                            <div>
+                                ${ref.tags.map(tag => `
+                                    <span class="tag" onclick="referenceManager.filterByTag('${tag}')">
+                                        ${tag}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="reference-actions">
+                            <button class="btn btn-sm view-reference" data-id="${ref.id}">View</button>
+                            <button class="btn btn-sm btn-info popout-reference" data-id="${ref.id}">Popout</button>
+                            <button class="btn btn-sm btn-danger delete-reference" data-id="${ref.id}">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Add event listeners to view buttons
+                document.querySelectorAll('.view-reference').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const id = e.target.dataset.id;
+                        this.showReferenceDetails(id);
+                    });
+                });
+                
+                // Add event listeners to popout buttons
+                document.querySelectorAll('.popout-reference').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const id = e.target.dataset.id;
+                        this.showReferenceInPopup(id);
+                    });
+                });
+                
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-reference').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const id = e.target.dataset.id;
+                        if (confirm('Are you sure you want to delete this reference?')) {
+                            this.deleteReference(id);
+                        }
+                    });
+                });
+            }
+            
+            // Open full-page references view
+            openFullPageView() {
+                const sortBy = document.getElementById('full-page-sort').value;
+                this.renderFullPageReferences(null, sortBy);
+                document.getElementById('full-page-view').classList.add('active');
+            }
+            
+            // Close full-page references view
+            closeFullPageView() {
+                document.getElementById('full-page-view').classList.remove('active');
+            }
+            
+            // Render references in full-page view
+            renderFullPageReferences(filteredReferences = null, sortBy = 'newest') {
+                const container = document.getElementById('full-page-references');
+                const resultsCount = document.getElementById('full-page-results-count');
+                let referencesToRender = filteredReferences || this.references;
+                
+                // Sort the references
+                referencesToRender = this.sortReferences(referencesToRender, sortBy);
+                
+                // Update results count
+                resultsCount.textContent = `${referencesToRender.length} reference${referencesToRender.length === 1 ? '' : 's'}`;
+                
+                if (referencesToRender.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <div class="empty-state-icon">📚</div>
+                            <h3>No References Found</h3>
+                            <p>${filteredReferences ? 'Try adjusting your search terms' : 'Add your first reference to get started!'}</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = referencesToRender.map(ref => `
+                    <div class="full-page-reference-item" data-id="${ref.id}">
+                        <div class="full-page-reference-title">${ref.title}</div>
+                        <div class="full-page-reference-authors">${ref.authors.join(', ')}</div>
+                        <div class="full-page-reference-meta">
+                            <span class="reference-journal">${ref.journal || 'No journal'}</span>
+                            ${ref.year ? `<span class="reference-year">${ref.year}</span>` : ''}
+                        </div>
+                        ${ref.doi ? `<div style="font-size: 0.85em; color: var(--medium-gray); margin-bottom: 8px;"><strong>DOI:</strong> ${ref.doi}</div>` : ''}
+                        ${ref.abstract ? `
+                            <div style="font-size: 0.9em; line-height: 1.4; margin-bottom: 10px; color: var(--secondary-color);">
+                                ${ref.abstract.substring(0, 150)}${ref.abstract.length > 150 ? '...' : ''}
+                            </div>
+                        ` : ''}
+                        ${ref.tags.length > 0 ? `
+                            <div style="margin-bottom: 10px;">
+                                ${ref.tags.map(tag => `
+                                    <span class="tag" style="font-size: 0.75em;">
+                                        ${tag}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="full-page-reference-actions">
+                            <button class="btn btn-sm view-reference" data-id="${ref.id}">View Details</button>
+                            <button class="btn btn-sm btn-info popout-reference" data-id="${ref.id}">Popout</button>
+                            <button class="btn btn-sm btn-outline" onclick="referenceManager.showReferenceDetails('${ref.id}'); referenceManager.closeFullPageView();">Open in Sidebar</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Add event listeners
+                this.attachFullPageEventListeners();
+            }
+            
+            // Attach event listeners for full-page view
+            attachFullPageEventListeners() {
+                // View details buttons
+                document.querySelectorAll('.full-page-reference-item .view-reference').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const id = e.target.dataset.id;
+                        this.showReferenceDetails(id);
+                        this.closeFullPageView();
+                    });
+                });
+                
+                // Popout buttons
+                document.querySelectorAll('.full-page-reference-item .popout-reference').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const id = e.target.dataset.id;
+                        this.showReferenceInPopup(id);
+                    });
+                });
+            }
+            
+            // Initialize full-page view functionality
+            initializeFullPageView() {
+                // Open full-page view button
+                document.getElementById('open-full-page').addEventListener('click', () => {
+                    this.openFullPageView();
+                });
+                
+                // Close full-page view button
+                document.getElementById('full-page-close').addEventListener('click', () => {
+                    this.closeFullPageView();
+                });
+                
+                // Full-page search functionality
+                const fullPageSearch = document.getElementById('full-page-search');
+                const fullPageSearchClear = document.getElementById('full-page-search-clear');
+                
+                fullPageSearch.addEventListener('input', (e) => {
+                    const query = e.target.value.trim();
+                    const sortBy = document.getElementById('full-page-sort').value;
+                    if (query) {
+                        fullPageSearchClear.style.display = 'flex';
+                        this.searchFullPageReferences(query, sortBy);
+                    } else {
+                        fullPageSearchClear.style.display = 'none';
+                        this.renderFullPageReferences(null, sortBy);
+                    }
+                });
+                
+                fullPageSearchClear.addEventListener('click', () => {
+                    fullPageSearch.value = '';
+                    fullPageSearchClear.style.display = 'none';
+                    const sortBy = document.getElementById('full-page-sort').value;
+                    this.renderFullPageReferences(null, sortBy);
+                    fullPageSearch.focus();
+                });
+                
+                // Sort functionality
+                const sortSelect = document.getElementById('full-page-sort');
+                sortSelect.addEventListener('change', (e) => {
+                    const currentSearch = document.getElementById('full-page-search').value.trim();
+                    if (currentSearch) {
+                        this.searchFullPageReferences(currentSearch, e.target.value);
+                    } else {
+                        this.renderFullPageReferences(null, e.target.value);
+                    }
+                });
+                
+                // Export all button
+                document.getElementById('full-page-export').addEventListener('click', () => {
+                    this.exportReferences('json');
+                });
+                
+                // View toggle buttons
+                document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const viewType = e.target.dataset.view;
+                        document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.toggleFullPageView(viewType);
+                    });
+                });
+                
+                // Close with Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && document.getElementById('full-page-view').classList.contains('active')) {
+                        this.closeFullPageView();
+                    }
+                });
+            }
+            
+            // Search in full-page view
+            searchFullPageReferences(query, sortBy = 'newest') {
+                const searchTerm = query.toLowerCase();
+                const filtered = this.references.filter(ref => {
+                    const searchableFields = [
+                        ref.title,
+                        ref.authors.join(' '),
+                        ref.journal || '',
+                        ref.notes || '',
+                        ref.abstract || '',
+                        ref.tags.join(' ')
+                    ];
+                    
+                    return searchableFields.some(field => 
+                        field.toLowerCase().includes(searchTerm)
+                    );
+                });
+                
+                this.renderFullPageReferences(filtered, sortBy);
+            }
+            
+            // Toggle between grid and list view
+            toggleFullPageView(viewType) {
+                const container = document.getElementById('full-page-references');
+                if (viewType === 'list') {
+                    container.style.gridTemplateColumns = '1fr';
+                    container.classList.add('list-view');
+                } else {
+                    container.style.gridTemplateColumns = 'repeat(auto-fill, minmax(400px, 1fr))';
+                    container.classList.remove('list-view');
+                }
+            }
+            
+            // Show reference in popup window
+            showReferenceInPopup(id) {
+                const reference = this.references.find(ref => ref.id === id);
+                if (!reference) return;
+                
+                const popupContent = `
+                    <div class="reference-item">
+                        <div class="reference-title">${reference.title}</div>
+                        <div class="reference-authors">${reference.authors.join(', ')}</div>
+                        <div class="reference-meta">
+                            <span class="reference-journal">${reference.journal || 'No journal'}</span>
+                            ${reference.year ? `<span class="reference-year">${reference.year}</span>` : ''}
+                        </div>
+                        ${reference.doi ? `<div><strong>DOI:</strong> ${reference.doi}</div>` : ''}
+                        ${reference.url ? `
+                            <div>
+                                <strong>URL:</strong> 
+                                <a href="${reference.url}" target="_blank">${reference.url}</a>
+                                <button class="btn btn-outline btn-sm" onclick="referenceManager.openPubMed('${reference.url}')">Open PubMed</button>
+                            </div>
+                        ` : ''}
+                        ${reference.notes ? `
+                            <div class="reference-notes">
+                                <strong>Notes:</strong> 
+                                <div id="notes-display" style="white-space: pre-wrap;">${reference.notes}</div>
+                                <button class="btn btn-sm edit-notes-btn" onclick="referenceManager.editNotesInPopup('${reference.id}')" style="margin-top: 8px;">Edit Notes</button>
+                            </div>
+                        ` : `
+                            <div class="reference-notes">
+                                <strong>Notes:</strong> 
+                                <div id="notes-display" style="white-space: pre-wrap; font-style: italic; color: #999;">No notes added</div>
+                                <button class="btn btn-sm edit-notes-btn" onclick="referenceManager.editNotesInPopup('${reference.id}')" style="margin-top: 8px;">Add Notes</button>
+                            </div>
+                        `}
+                        ${reference.tags.length > 0 ? `
+                            <div>
+                                <strong>Tags:</strong> 
+                                ${reference.tags.map(tag => `
+                                    <span class="tag">
+                                        ${tag}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        ${reference.abstract ? `
+                            <div class="reference-abstract">
+                                <strong>Abstract:</strong> 
+                                <div style="white-space: pre-wrap;">${reference.abstract}</div>
+                            </div>
+                        ` : ''}
+                        <div class="reference-actions">
+                            <button class="btn btn-success" onclick="referenceManager.showReferenceDetails('${reference.id}'); referenceManager.closePopup();">Open in Main View</button>
+                        </div>
+                    </div>
+                `;
+                
+                this.openPopup(popupContent);
+            }
+            
+            // Show reference details in main panel
+            showReferenceDetails(id) {
+                const reference = this.references.find(ref => ref.id === id);
+                if (!reference) return;
+                
+                this.currentReferenceId = id;
+                this.isEditMode = false;
+                this.originalData = null;
+                
+                const detailsContainer = document.getElementById('reference-details');
+                
+                detailsContainer.innerHTML = `
+                    <div class="reference-item" id="reference-detail-view">
+                        <div class="reference-title">${reference.title}</div>
+                        <div class="reference-authors">${reference.authors.join(', ')}</div>
+                        <div class="reference-meta">
+                            <span class="reference-journal">${reference.journal || 'No journal'}</span>
+                            ${reference.year ? `<span class="reference-year">${reference.year}</span>` : ''}
+                        </div>
+                        ${reference.doi ? `<div><strong>DOI:</strong> ${reference.doi}</div>` : ''}
+                        ${reference.url ? `
+                            <div>
+                                <strong>URL:</strong> 
+                                <a href="${reference.url}" target="_blank">${reference.url}</a>
+                                <button class="btn btn-outline btn-sm" onclick="referenceManager.openPubMed('${reference.url}')">Open PubMed</button>
+                            </div>
+                        ` : ''}
+                        ${reference.notes ? `
+                            <div class="reference-notes">
+                                <strong>Notes:</strong> 
+                                <div id="detail-notes-display" style="white-space: pre-wrap; margin-bottom: 10px;">${reference.notes}</div>
+                                <button class="btn btn-sm edit-detail-notes-btn" onclick="referenceManager.editDetailNotes('${reference.id}')">Edit Notes</button>
+                            </div>
+                        ` : `
+                            <div class="reference-notes">
+                                <strong>Notes:</strong> 
+                                <div id="detail-notes-display" style="white-space: pre-wrap; font-style: italic; color: #999; margin-bottom: 10px;">No notes added</div>
+                                <button class="btn btn-sm edit-detail-notes-btn" onclick="referenceManager.editDetailNotes('${reference.id}')">Add Notes</button>
+                            </div>
+                        `}
+                        ${reference.tags.length > 0 ? `
+                            <div>
+                                <strong>Tags:</strong> 
+                                <span id="tags-display">
+                                    ${reference.tags.map(tag => `
+                                        <span class="tag">
+                                            ${tag}
+                                        </span>
+                                    `).join('')}
+                                </span>
+                                <button class="btn btn-sm edit-tags-btn" onclick="referenceManager.editTagsInline()">Edit Tags</button>
+                            </div>
+                        ` : `
+                            <div>
+                                <strong>Tags:</strong> 
+                                <button class="btn btn-sm edit-tags-btn" onclick="referenceManager.editTagsInline()">Add Tags</button>
+                            </div>
+                        `}
+                        ${reference.abstract ? `
+                            <div class="reference-abstract">
+                                <strong>Abstract:</strong> 
+                                <div style="white-space: pre-wrap;">${reference.abstract}</div>
+                            </div>
+                        ` : ''}
+                        <div class="reference-actions">
+                            <button class="btn edit-reference" onclick="referenceManager.toggleEditMode()">Edit</button>
+                            <button class="btn btn-info popout-reference" onclick="referenceManager.showReferenceInPopup('${reference.id}')">Popout</button>
+                            <button class="btn btn-danger delete-reference" onclick="referenceManager.deleteReference('${reference.id}')">Delete</button>
+                        </div>
+                        <div class="save-cancel-buttons" style="display: none; margin-top: 16px; gap: 10px;">
+                            <button class="btn btn-success" onclick="referenceManager.saveInlineEdits()">Save Changes</button>
+                            <button class="btn btn-danger" onclick="referenceManager.cancelInlineEdits()">Cancel</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Store original data for cancel functionality
+                this.originalData = {...reference};
+            }
+            
+            // Toggle edit mode for inline editing
+            toggleEditMode() {
+                const detailView = document.getElementById('reference-detail-view');
+                const saveCancelButtons = detailView.querySelector('.save-cancel-buttons');
+                this.isEditMode = !this.isEditMode;
+                
+                if (this.isEditMode) {
+                    saveCancelButtons.style.display = 'flex';
+                    this.makeFieldsEditable();
+                } else {
+                    saveCancelButtons.style.display = 'none';
+                    this.makeFieldsReadOnly();
+                }
+            }
+            
+            // Make fields editable
+            makeFieldsEditable() {
+                const reference = this.references.find(ref => ref.id === this.currentReferenceId);
+                if (!reference) return;
+                
+                const detailView = document.getElementById('reference-detail-view');
+                
+                // Title
+                const titleEl = detailView.querySelector('.reference-title');
+                titleEl.innerHTML = `<input type="text" value="${reference.title}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">`;
+                
+                // Authors
+                const authorsEl = detailView.querySelector('.reference-authors');
+                authorsEl.innerHTML = `<input type="text" value="${reference.authors.join(', ')}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">`;
+                
+                // Journal and Year
+                const metaEl = detailView.querySelector('.reference-meta');
+                metaEl.innerHTML = `
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" value="${reference.journal || ''}" placeholder="Journal" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <input type="number" value="${reference.year || ''}" placeholder="Year" min="1900" max="2030" style="width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                `;
+                
+                // DOI
+                const doiEl = detailView.querySelector('div:has(> strong:contains("DOI"))');
+                if (doiEl) {
+                    doiEl.innerHTML = `<strong>DOI:</strong> <input type="text" value="${reference.doi || ''}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">`;
+                } else {
+                    const urlEl = detailView.querySelector('div:has(> strong:contains("URL"))');
+                    if (urlEl) {
+                        urlEl.insertAdjacentHTML('beforebegin', `<div><strong>DOI:</strong> <input type="text" value="${reference.doi || ''}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></div>`);
+                    }
+                }
+                
+                // URL
+                const urlEl = detailView.querySelector('div:has(> strong:contains("URL"))');
+                if (urlEl) {
+                    urlEl.innerHTML = `
+                        <strong>URL:</strong> 
+                        <input type="url" value="${reference.url || ''}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 5px;">
+                        <button class="btn btn-outline btn-sm" onclick="referenceManager.openPubMed('${reference.url}')" style="margin-top: 5px;">Open PubMed</button>
+                    `;
+                }
+                
+                // Notes
+                const notesEl = detailView.querySelector('.reference-notes');
+                if (notesEl) {
+                    notesEl.innerHTML = `
+                        <strong>Notes:</strong> 
+                        <textarea style="width: 100%; height: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 5px;">${reference.notes || ''}</textarea>
+                    `;
+                }
+                
+                // Abstract
+                const abstractEl = detailView.querySelector('.reference-abstract');
+                if (abstractEl) {
+                    abstractEl.innerHTML = `
+                        <strong>Abstract:</strong> 
+                        <textarea style="width: 100%; height: 150px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 5px;">${reference.abstract || ''}</textarea>
+                    `;
+                }
+            }
+            
+            // Make fields read-only
+            makeFieldsReadOnly() {
+                // This will be handled by re-rendering the view
+                this.showReferenceDetails(this.currentReferenceId);
+            }
+            
+            // Edit tags inline
+            editTagsInline() {
+                const reference = this.references.find(ref => ref.id === this.currentReferenceId);
+                if (!reference) return;
+                
+                const newTags = prompt('Enter tags (comma-separated):', reference.tags.join(', '));
+                if (newTags !== null) {
+                    reference.tags = newTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    this.saveReferences();
+                    this.showReferenceDetails(this.currentReferenceId);
+                    this.renderReferences();
+                    this.updateFilters();
+                }
+            }
+            
+            // Save inline edits
+            saveInlineEdits() {
+                const reference = this.references.find(ref => ref.id === this.currentReferenceId);
+                if (!reference) return;
+                
+                const detailView = document.getElementById('reference-detail-view');
+                
+                // Get values from editable fields
+                const titleInput = detailView.querySelector('.reference-title input');
+                const authorsInput = detailView.querySelector('.reference-authors input');
+                const journalInput = detailView.querySelector('.reference-meta input:first-child');
+                const yearInput = detailView.querySelector('.reference-meta input:last-child');
+                const doiInput = detailView.querySelector('div:has(> strong:contains("DOI")) input');
+                const urlInput = detailView.querySelector('div:has(> strong:contains("URL")) input');
+                const notesInput = detailView.querySelector('.reference-notes textarea');
+                const abstractInput = detailView.querySelector('.reference-abstract textarea');
+                
+                // Update reference object
+                if (titleInput) reference.title = titleInput.value;
+                if (authorsInput) reference.authors = authorsInput.value.split(',').map(a => a.trim());
+                if (journalInput) reference.journal = journalInput.value;
+                if (yearInput) reference.year = yearInput.value ? parseInt(yearInput.value) : null;
+                if (doiInput) reference.doi = doiInput.value;
+                if (urlInput) reference.url = urlInput.value;
+                if (notesInput) reference.notes = notesInput.value;
+                if (abstractInput) reference.abstract = abstractInput.value;
+                
+                this.saveReferences();
+                this.renderReferences();
+                this.showReferenceDetails(this.currentReferenceId);
+                
+                this.showNotification('Changes saved successfully!', 'success');
+            }
+            
+            // Cancel inline edits
+            cancelInlineEdits() {
+                if (this.originalData) {
+                    const referenceIndex = this.references.findIndex(ref => ref.id === this.currentReferenceId);
+                    if (referenceIndex !== -1) {
+                        this.references[referenceIndex] = {...this.originalData};
+                        this.saveReferences();
+                    }
+                }
+                this.showReferenceDetails(this.currentReferenceId);
+            }
+            
+            // Filter by tag
+            filterByTag(tag) {
+                document.getElementById('tag-filter').value = tag;
+                this.filterReferences();
+            }
+            
+            // Delete reference
+            deleteReference(id) {
+                if (confirm('Are you sure you want to delete this reference?')) {
+                    this.references = this.references.filter(ref => ref.id !== id);
+                    this.saveReferences();
+                    this.renderReferences();
+                    this.updateFilters();
+                    
+                    // Clear details if viewing the deleted reference
+                    if (this.currentReferenceId === id) {
+                        document.getElementById('reference-details').innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📄</div>
+                                <h3>No Reference Selected</h3>
+                                <p>Select a reference from your library to view details</p>
+                            </div>
+                        `;
+                        this.currentReferenceId = null;
+                    }
+                    
+                    this.showNotification('Reference deleted successfully', 'success');
+                }
+            }
+            
+            // Initialize search functionality
+            initializeSearch() {
+                const searchInput = document.getElementById('search-input');
+                const searchClear = document.getElementById('search-clear');
+                const searchContainer = document.getElementById('search-container');
+                
+                // Show/hide clear button based on input content
+                searchInput.addEventListener('input', (e) => {
+                    if (e.target.value.trim()) {
+                        searchContainer.classList.add('has-content');
+                    } else {
+                        searchContainer.classList.remove('has-content');
+                    }
+                    this.searchReferences(e.target.value);
+                });
+                
+                // Clear search input
+                searchClear.addEventListener('click', () => {
+                    searchInput.value = '';
+                    searchContainer.classList.remove('has-content');
+                    this.searchReferences('');
+                    searchInput.focus();
+                });
+                
+                // Handle Escape key to clear search
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        searchInput.value = '';
+                        searchContainer.classList.remove('has-content');
+                        this.searchReferences('');
+                    }
+                });
+            }
+            
+            // Search references
+            searchReferences(query) {
+                const searchResultsInfo = document.getElementById('search-results-info');
+                
+                if (!query) {
+                    this.renderReferences();
+                    searchResultsInfo.style.display = 'none';
+                    return;
+                }
+                
+                const searchTerm = query.toLowerCase();
+                const filtered = this.references.filter(ref => {
+                    const searchableFields = [
+                        ref.title,
+                        ref.authors.join(' '),
+                        ref.journal || '',
+                        ref.notes || '',
+                        ref.abstract || '',
+                        ref.tags.join(' ')
+                    ];
+                    
+                    return searchableFields.some(field => 
+                        field.toLowerCase().includes(searchTerm)
+                    );
+                });
+                
+                // Show results count
+                if (filtered.length === 0) {
+                    searchResultsInfo.innerHTML = `No results found for "<strong>${query}</strong>"`;
+                    searchResultsInfo.style.display = 'block';
+                } else {
+                    searchResultsInfo.innerHTML = `Found <strong>${filtered.length}</strong> reference${filtered.length === 1 ? '' : 's'} for "<strong>${query}</strong>"`;
+                    searchResultsInfo.style.display = 'block';
+                }
+                
+                this.renderReferences(filtered);
+            }
+            
+            // Filter references
+            filterReferences() {
+                const tagFilter = document.getElementById('tag-filter').value;
+                const yearFilter = document.getElementById('year-filter').value;
+                
+                let filtered = this.references;
+                
+                if (tagFilter) {
+                    filtered = filtered.filter(ref => ref.tags.includes(tagFilter));
+                }
+                
+                if (yearFilter) {
+                    filtered = filtered.filter(ref => ref.year === parseInt(yearFilter));
+                }
+                
+                this.renderReferences(filtered);
+            }
+            
+            // Update filter options
+            updateFilters() {
+                const tagFilter = document.getElementById('tag-filter');
+                const yearFilter = document.getElementById('year-filter');
+                
+                // Get all unique tags
+                const allTags = [...new Set(this.references.flatMap(ref => ref.tags))].sort();
+                
+                // Get all unique years
+                const allYears = [...new Set(this.references.map(ref => ref.year).filter(year => year))].sort((a, b) => b - a);
+                
+                // Update tag filter
+                tagFilter.innerHTML = '<option value="">All tags</option>';
+                allTags.forEach(tag => {
+                    tagFilter.innerHTML += `<option value="${tag}">${tag}</option>`;
+                });
+                
+                // Update year filter
+                yearFilter.innerHTML = '<option value="">All years</option>';
+                allYears.forEach(year => {
+                    yearFilter.innerHTML += `<option value="${year}">${year}</option>`;
+                });
+            }
+            
+            // Export references
+            exportReferences(format) {
+                if (this.references.length === 0) {
+                    this.showNotification('No references to export', 'error');
+                    return;
+                }
+                
+                let content = '';
+                let mimeType = '';
+                let filename = '';
+                
+                switch (format) {
+                    case 'bibtex':
+                        content = this.generateBibTeX();
+                        mimeType = 'application/x-bibtex';
+                        filename = 'references.bib';
+                        break;
+                    case 'ris':
+                        content = this.generateRIS();
+                        mimeType = 'application/x-research-info-systems';
+                        filename = 'references.ris';
+                        break;
+                    case 'json':
+                        content = JSON.stringify(this.references, null, 2);
+                        mimeType = 'application/json';
+                        filename = 'references.json';
+                        break;
+                }
+                
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification(`References exported as ${format.toUpperCase()}`, 'success');
+            }
+            
+            // Export CSV
+            exportCSV() {
+                if (this.references.length === 0) {
+                    this.showNotification('No references to export', 'error');
+                    return;
+                }
+                
+                const headers = ['Title', 'Authors', 'Journal', 'Year', 'DOI', 'URL', 'Abstract', 'Tags', 'Notes'];
+                const csvContent = [
+                    headers.join(','),
+                    ...this.references.map(ref => [
+                        `"${ref.title.replace(/"/g, '""')}"`,
+                        `"${ref.authors.join('; ').replace(/"/g, '""')}"`,
+                        `"${(ref.journal || '').replace(/"/g, '""')}"`,
+                        ref.year || '',
+                        `"${(ref.doi || '').replace(/"/g, '""')}"`,
+                        `"${(ref.url || '').replace(/"/g, '""')}"`,
+                        `"${(ref.abstract || '').replace(/"/g, '""')}"`,
+                        `"${ref.tags.join('; ').replace(/"/g, '""')}"`,
+                        `"${(ref.notes || '').replace(/"/g, '""')}"`
+                    ].join(','))
+                ].join('\n');
+                
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'references.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('References exported as CSV', 'success');
+            }
+
+            // Save to file
+            saveToFile() {
+                if (this.references.length === 0) {
+                    this.showNotification('No references to save', 'error');
+                    return;
+                }
+                
+                const data = JSON.stringify(this.references, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'reference-manager-backup.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('References backed up successfully', 'success');
+            }
+
+            // Load from file
+            loadFromFile(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const loadedReferences = JSON.parse(e.target.result);
+                        
+                        if (Array.isArray(loadedReferences)) {
+                            if (confirm(`Load ${loadedReferences.length} references? This will replace your current references.`)) {
+                                this.references = loadedReferences;
+                                this.saveReferences();
+                                this.renderReferences();
+                                this.updateFilters();
+                                this.showNotification('References loaded successfully!', 'success');
+                            }
+                        } else {
+                            this.showNotification('Invalid file format. Please select a valid reference backup file.', 'error');
+                        }
+                    } catch (error) {
+                        this.showNotification('Error reading file. Please make sure it\'s a valid JSON file.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+                
+                // Reset file input
+                event.target.value = '';
+            }
+
+            // Import PubMed file (XML, MEDLINE, NBIB formats)
+            importPubMedFile(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const fileContent = e.target.result;
+                        const importedReferences = this.parsePubMedFile(fileContent, file.name);
+                        
+                        if (importedReferences.length > 0) {
+                            if (confirm(`Import ${importedReferences.length} references from PubMed file? They will be added to your current references.`)) {
+                                this.references.push(...importedReferences);
+                                this.saveReferences();
+                                this.renderReferences();
+                                this.updateFilters();
+                                this.showNotification(`Successfully imported ${importedReferences.length} references!`, 'success');
+                            }
+                        } else {
+                            this.showNotification('No references found in the PubMed file. Please make sure it\'s a valid PubMed export file.', 'error');
+                        }
+                    } catch (error) {
+                        console.error('PubMed file import error:', error);
+                        this.showNotification('Error reading PubMed file. Please make sure it\'s a valid PubMed export file (XML, MEDLINE, or NBIB format).', 'error');
+                    }
+                };
+                reader.readAsText(file);
+                
+                // Reset file input
+                event.target.value = '';
+            }
+
+            // Parse PubMed file content
+            parsePubMedFile(content, filename) {
+                console.log(`Parsing PubMed file: ${filename}, size: ${content.length} chars`);
+                
+                // Try to detect file format and parse accordingly
+                if (content.includes('<PubmedArticleSet>') || content.includes('<PubmedArticle>')) {
+                    console.log('Detected PubMed XML format');
+                    return this.parsePubMedXML(content);
+                } else if (content.includes('PMID-') || content.includes('TI  -') || content.includes('AB  -')) {
+                    console.log('Detected MEDLINE format');
+                    return this.parsePubMedMEDLINE(content);
+                } else if (content.includes('"uid"') || (content.includes('"title"') && content.includes('"authors"'))) {
+                    console.log('Detected NBIB format');
+                    return this.parsePubMedNBIB(content);
+                } else {
+                    console.log('Trying generic parsing');
+                    return this.parsePubMedGeneric(content);
+                }
+            }
+
+            // Parse PubMed XML format
+            parsePubMedXML(content) {
+                const references = [];
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(content, "text/xml");
+                const articles = xmlDoc.getElementsByTagName('PubmedArticle');
+                
+                console.log(`Found ${articles.length} articles in XML file`);
+                
+                for (let i = 0; i < articles.length; i++) {
+                    try {
+                        const article = articles[i];
+                        const pmid = article.getElementsByTagName('PMID')[0]?.textContent;
+                        const title = article.getElementsByTagName('ArticleTitle')[0]?.textContent;
+                        
+                        if (!title) {
+                            console.warn('Skipping article without title');
+                            continue;
+                        }
+                        
+                        // Extract authors
+                        const authorList = article.getElementsByTagName('Author');
+                        const authors = [];
+                        for (let j = 0; j < authorList.length; j++) {
+                            const author = authorList[j];
+                            const lastName = author.getElementsByTagName('LastName')[0]?.textContent;
+                            const foreName = author.getElementsByTagName('ForeName')[0]?.textContent;
+                            const collectiveName = author.getElementsByTagName('CollectiveName')[0]?.textContent;
+                            
+                            if (collectiveName) {
+                                authors.push(collectiveName);
+                            } else if (lastName) {
+                                authors.push(foreName ? `${foreName} ${lastName}` : lastName);
+                            }
+                        }
+                        
+                        // Extract journal info
+                        const journal = article.getElementsByTagName('Journal')[0];
+                        const journalTitle = journal?.getElementsByTagName('Title')[0]?.textContent;
+                        
+                        // Extract publication date
+                        const pubDate = journal?.getElementsByTagName('JournalIssue')[0]?.getElementsByTagName('PubDate')[0];
+                        let year = null;
+                        if (pubDate) {
+                            year = pubDate.getElementsByTagName('Year')[0]?.textContent;
+                            if (!year) {
+                                const medlineDate = pubDate.getElementsByTagName('MedlineDate')[0]?.textContent;
+                                if (medlineDate) {
+                                    const yearMatch = medlineDate.match(/\d{4}/);
+                                    year = yearMatch ? yearMatch[0] : null;
+                                }
+                            }
+                        }
+                        
+                        // Extract abstract - handle multiple AbstractText elements and multi-line content
+                        let abstract = '';
+                        const abstractElements = article.getElementsByTagName('AbstractText');
+                        if (abstractElements.length > 0) {
+                            for (let k = 0; k < abstractElements.length; k++) {
+                                const abstractText = abstractElements[k].textContent;
+                                if (abstractText) {
+                                    // Check if this abstract part has a label (like "BACKGROUND:", "METHODS:", etc.)
+                                    const label = abstractElements[k].getAttribute('Label');
+                                    if (label) {
+                                        abstract += (abstract ? '\n\n' : '') + label + ': ' + abstractText;
+                                    } else {
+                                        abstract += (abstract ? '\n\n' : '') + abstractText;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // If no structured abstract found, try getting abstract from alternative location
+                        if (!abstract) {
+                            const abstractElement = article.getElementsByTagName('Abstract')[0];
+                            if (abstractElement) {
+                                abstract = abstractElement.textContent.trim();
+                            }
+                        }
+                        
+                        // Extract DOI and other IDs
+                        const articleIdList = article.getElementsByTagName('ArticleId');
+                        let doi = '';
+                        for (let l = 0; l < articleIdList.length; l++) {
+                            const id = articleIdList[l];
+                            if (id.getAttribute('IdType') === 'doi') {
+                                doi = id.textContent;
+                                break;
+                            }
+                        }
+                        
+                        references.push({
+                            id: 'pubmed-' + pmid + '-' + Date.now() + '-' + i,
+                            title: title,
+                            authors: authors.length > 0 ? authors : ['Unknown Authors'],
+                            journal: journalTitle || '',
+                            year: year ? parseInt(year) : null,
+                            doi: doi,
+                            url: pmid ? `https://pubmed.ncbi.nlm.nih.gov/${pmid}/` : '',
+                            abstract: abstract,
+                            tags: ['PubMed Import'],
+                            notes: `Imported from PubMed file on ${new Date().toLocaleDateString()}.${pmid ? ` PubMed ID: ${pmid}` : ''}`,
+                            createdAt: new Date().toISOString()
+                        });
+                        
+                    } catch (error) {
+                        console.error('Error parsing PubMed article:', error);
+                    }
+                }
+                
+                console.log(`Successfully parsed ${references.length} references from XML`);
+                return references;
+            }
+
+            // Parse PubMed MEDLINE format
+            parsePubMedMEDLINE(content) {
+                const references = [];
+                // Split by double newlines to get individual entries
+                const entries = content.split(/\n\s*\n/);
+                
+                console.log(`Found ${entries.length} entries in MEDLINE file`);
+                
+                for (let entry of entries) {
+                    try {
+                        if (!entry.trim()) continue;
+                        
+                        const lines = entry.split('\n');
+                        let title = '', authors = [], journal = '', year = null, abstract = '', pmid = '';
+                        let inAbstract = false;
+                        let currentAbstract = '';
+                        
+                        for (let line of lines) {
+                            const trimmed = line.trim();
+                            if (!trimmed) continue;
+                            
+                            if (trimmed.startsWith('TI  -')) {
+                                title = trimmed.substring(5).trim();
+                                inAbstract = false;
+                            } else if (trimmed.startsWith('AU  -')) {
+                                authors.push(trimmed.substring(5).trim());
+                                inAbstract = false;
+                            } else if (trimmed.startsWith('JT  -') || trimmed.startsWith('TA  -')) {
+                                journal = trimmed.substring(5).trim();
+                                inAbstract = false;
+                            } else if (trimmed.startsWith('DP  -')) {
+                                const dateStr = trimmed.substring(5).trim();
+                                const yearMatch = dateStr.match(/\d{4}/);
+                                year = yearMatch ? parseInt(yearMatch[0]) : null;
+                                inAbstract = false;
+                            } else if (trimmed.startsWith('AB  -')) {
+                                currentAbstract = trimmed.substring(5).trim();
+                                inAbstract = true;
+                            } else if (trimmed.startsWith('PMID-')) {
+                                pmid = trimmed.substring(6).trim();
+                                inAbstract = false;
+                            } else if (inAbstract && (trimmed.startsWith('      ') || trimmed === 'AB  -')) {
+                                // Continuation of abstract - MEDLINE format uses 6 spaces for continuation
+                                // Also handle case where abstract continues on next line with AB  - marker
+                                if (trimmed === 'AB  -') {
+                                    // Some formats repeat AB  - for continuation
+                                    currentAbstract += '\n\n';
+                                } else {
+                                    currentAbstract += ' ' + trimmed.substring(6).trim();
+                                }
+                            } else if (trimmed.startsWith('PHST-') || trimmed.startsWith('AID -') || 
+                                      trimmed.startsWith('PST -') || trimmed.startsWith('SO  -') ||
+                                      trimmed.startsWith('LA  -') || trimmed.startsWith('PT  -') ||
+                                      trimmed.startsWith('PL  -')) {
+                                // Skip other fields - end of abstract
+                                inAbstract = false;
+                            } else if (inAbstract && trimmed.startsWith('CI  -')) {
+                                // Copyright information - end of abstract
+                                inAbstract = false;
+                            } else if (inAbstract && !trimmed.startsWith('---')) {
+                                // Any other line while in abstract mode (unless it's a separator)
+                                currentAbstract += ' ' + trimmed;
+                            }
+                        }
+                        
+                        // Clean up abstract
+                        abstract = currentAbstract;
+                        
+                        if (title && authors.length > 0) {
+                            references.push({
+                                id: 'pubmed-' + (pmid || Date.now() + Math.random()) + '-' + references.length,
+                                title: title,
+                                authors: authors,
+                                journal: journal,
+                                year: year,
+                                doi: '',
+                                url: pmid ? `https://pubmed.ncbi.nlm.nih.gov/${pmid}/` : '',
+                                abstract: abstract,
+                                tags: ['PubMed Import'],
+                                notes: `Imported from PubMed file on ${new Date().toLocaleDateString()}.${pmid ? ` PubMed ID: ${pmid}` : ''}`,
+                                createdAt: new Date().toISOString()
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error parsing MEDLINE entry:', error);
+                    }
+                }
+                
+                console.log(`Successfully parsed ${references.length} references from MEDLINE`);
+                return references;
+            }
+
+            // Parse PubMed NBIB format
+            parsePubMedNBIB(content) {
+                const references = [];
+                try {
+                    // NBIB format is typically one JSON object per line
+                    const lines = content.split('\n').filter(line => line.trim());
+                    
+                    console.log(`Found ${lines.length} lines in NBIB file`);
+                    
+                    for (let i = 0; i < lines.length; i++) {
+                        try {
+                            const line = lines[i].trim();
+                            if (!line) continue;
+                            
+                            // Try to parse as JSON
+                            const item = JSON.parse(line);
+                            
+                            if (item.title && item.authors) {
+                                // Handle abstract which might be an array or string
+                                let abstractText = '';
+                                if (Array.isArray(item.abstract)) {
+                                    abstractText = item.abstract.join('\n\n');
+                                } else if (item.abstract) {
+                                    abstractText = item.abstract;
+                                } else if (item.abstractText) {
+                                    abstractText = item.abstractText;
+                                }
+                                
+                                references.push({
+                                    id: 'pubmed-' + (item.pmid || item.uid || Date.now() + i) + '-' + i,
+                                    title: item.title,
+                                    authors: Array.isArray(item.authors) ? item.authors : [item.authors],
+                                    journal: item.journal || item.source || '',
+                                    year: item.year || (item.pubdate ? parseInt(item.pubdate.substring(0, 4)) : null),
+                                    doi: item.doi || '',
+                                    url: item.pmid ? `https://pubmed.ncbi.nlm.nih.gov/${item.pmid}/` : (item.url || ''),
+                                    abstract: abstractText,
+                                    tags: ['PubMed Import'],
+                                    notes: `Imported from PubMed file on ${new Date().toLocaleDateString()}.${item.pmid ? ` PubMed ID: ${item.pmid}` : ''}`,
+                                    createdAt: new Date().toISOString()
+                                });
+                            }
+                        } catch (lineError) {
+                            console.warn('Failed to parse NBIB line:', lineError);
+                            // Continue with next line
+                        }
+                    }
+                    
+                } catch (error) {
+                    // If JSON parsing fails, try line-based parsing
+                    console.warn('NBIB JSON parsing failed, trying line-based parsing');
+                    return this.parsePubMedGeneric(content);
+                }
+                
+                console.log(`Successfully parsed ${references.length} references from NBIB`);
+                return references;
+            }
+
+            // Generic PubMed file parser
+            parsePubMedGeneric(content) {
+                const references = [];
+                // Split content into potential reference blocks
+                const blocks = content.split(/\n\s*\n/);
+                
+                console.log(`Found ${blocks.length} blocks in generic file`);
+                
+                let currentRef = null;
+                let inAbstract = false;
+                
+                for (let block of blocks) {
+                    const lines = block.split('\n');
+                    
+                    for (let line of lines) {
+                        const trimmed = line.trim();
+                        if (!trimmed) continue;
+                        
+                        // Look for patterns that indicate a new reference
+                        if (trimmed.match(/PMID-?\s*\d+/) || 
+                            (trimmed.toLowerCase().includes('title') && !currentRef) ||
+                            (trimmed.match(/[A-Z]{2,4}\s*-/) && !currentRef)) {
+                            
+                            // Save previous reference if exists
+                            if (currentRef && currentRef.title) {
+                                references.push(currentRef);
+                            }
+                            
+                            // Start new reference
+                            currentRef = {
+                                id: 'pubmed-generic-' + Date.now() + '-' + references.length,
+                                title: '',
+                                authors: [],
+                                journal: '',
+                                year: null,
+                                doi: '',
+                                url: '',
+                                abstract: '',
+                                tags: ['PubMed Import'],
+                                notes: `Imported from PubMed file on ${new Date().toLocaleDateString()}`,
+                                createdAt: new Date().toISOString()
+                            };
+                            inAbstract = false;
+                        }
+                        
+                        if (currentRef) {
+                            // Extract title
+                            if (trimmed.toLowerCase().includes('title') || trimmed.match(/TI\s*-/)) {
+                                currentRef.title = trimmed.replace(/.*[Tt]itle[:\s]*/, '')
+                                                         .replace(/.*TI\s*-/, '')
+                                                         .trim();
+                                inAbstract = false;
+                            }
+                            // Extract authors
+                            else if (trimmed.toLowerCase().includes('author') || trimmed.match(/AU\s*-/)) {
+                                const authorText = trimmed.replace(/.*[Aa]uthor[:\s]*/, '')
+                                                        .replace(/.*AU\s*-/, '')
+                                                        .trim();
+                                const authors = authorText.split(/[,;]/).map(a => a.trim()).filter(a => a);
+                                if (authors.length > 0) {
+                                    currentRef.authors = authors;
+                                }
+                                inAbstract = false;
+                            }
+                            // Extract journal
+                            else if (trimmed.toLowerCase().includes('journal') || trimmed.match(/JT\s*-/) || trimmed.match(/TA\s*-/)) {
+                                currentRef.journal = trimmed.replace(/.*[Jj]ournal[:\s]*/, '')
+                                                          .replace(/.*JT\s*-/, '')
+                                                          .replace(/.*TA\s*-/, '')
+                                                          .trim();
+                                inAbstract = false;
+                            }
+                            // Start of abstract
+                            else if (trimmed.toLowerCase().includes('abstract') || trimmed.match(/AB\s*-/)) {
+                                currentRef.abstract = trimmed.replace(/.*[Aa]bstract[:\s]*/, '')
+                                                           .replace(/.*AB\s*-/, '')
+                                                           .trim();
+                                inAbstract = true;
+                            }
+                            // Continuation of abstract (indented lines)
+                            else if (inAbstract && (trimmed.startsWith('   ') || trimmed.startsWith('      '))) {
+                                currentRef.abstract += ' ' + trimmed.trim();
+                            }
+                            // Extract PMID
+                            else if (trimmed.match(/PMID-?\s*\d+/)) {
+                                const pmidMatch = trimmed.match(/PMID-?\s*(\d+)/);
+                                if (pmidMatch) {
+                                    currentRef.url = `https://pubmed.ncbi.nlm.nih.gov/${pmidMatch[1]}/`;
+                                    currentRef.notes += ` PubMed ID: ${pmidMatch[1]}`;
+                                }
+                                inAbstract = false;
+                            }
+                            // Other metadata fields - end abstract
+                            else if (trimmed.match(/[A-Z]{2,4}\s*-/)) {
+                                inAbstract = false;
+                            }
+                        }
+                    }
+                }
+                
+                // Don't forget the last reference
+                if (currentRef && currentRef.title) {
+                    references.push(currentRef);
+                }
+                
+                console.log(`Successfully parsed ${references.length} references from generic format`);
+                return references;
+            }
+            
+            // Generate BibTeX format
+            generateBibTeX() {
+                return this.references.map(ref => {
+                    const entryType = 'article'; // Default to article, could be enhanced
+                    const citeKey = ref.doi ? ref.doi.replace(/[^a-zA-Z0-9]/g, '') : ref.id;
+                    
+                    let bibtex = `@${entryType}{${citeKey},\n`;
+                    bibtex += `  title = {${ref.title}},\n`;
+                    bibtex += `  author = {${ref.authors.join(' and ')}},\n`;
+                    if (ref.journal) bibtex += `  journal = {${ref.journal}},\n`;
+                    if (ref.year) bibtex += `  year = {${ref.year}},\n`;
+                    if (ref.doi) bibtex += `  doi = {${ref.doi}},\n`;
+                    if (ref.url) bibtex += `  url = {${ref.url}},\n`;
+                    if (ref.abstract) bibtex += `  abstract = {${ref.abstract}},\n`;
+                    bibtex = bibtex.slice(0, -2); // Remove trailing comma and newline
+                    bibtex += '\n}';
+                    
+                    return bibtex;
+                }).join('\n\n');
+            }
+            
+            // Generate RIS format
+            generateRIS() {
+                return this.references.map(ref => {
+                    let ris = '';
+                    ris += `TY  - JOUR\n`;
+                    ris += `TI  - ${ref.title}\n`;
+                    ref.authors.forEach(author => {
+                        ris += `AU  - ${author}\n`;
+                    });
+                    if (ref.journal) ris += `JO  - ${ref.journal}\n`;
+                    if (ref.year) ris += `PY  - ${ref.year}\n`;
+                    if (ref.doi) ris += `DO  - ${ref.doi}\n`;
+                    if (ref.url) ris += `UR  - ${ref.url}\n`;
+                    if (ref.abstract) ris += `AB  - ${ref.abstract}\n`;
+                    ris += `ER  - \n`;
+                    
+                    return ris;
+                }).join('\n');
+            }
+            
+            // Search PubMed
+            async searchPubMed() {
+                const query = document.getElementById('pubmed-search').value.trim();
+                if (!query) {
+                    this.showNotification('Please enter a search term', 'error');
+                    return;
+                }
+                
+                const resultsContainer = document.getElementById('pubmed-results');
+                resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching PubMed...</p></div>';
+                
+                try {
+                    // Using the E-utilities API from NCBI
+                    const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmode=json&retmax=20`;
+                    
+                    const searchResponse = await fetch(searchUrl);
+                    const searchData = await searchResponse.json();
+                    
+                    const idList = searchData.esearchresult.idlist;
+                    
+                    if (idList.length === 0) {
+                        resultsContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>No results found</p></div>';
+                        return;
+                    }
+                    
+                    // Fetch details for the found IDs
+                    await this.fetchPubMedDetails(idList, resultsContainer);
+                    
+                } catch (error) {
+                    console.error('PubMed search error:', error);
+                    resultsContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Error searching PubMed. Please try again.</p></div>';
+                }
+            }
+            
+            // Fetch PubMed details by IDs
+            async fetchPubMedByIds() {
+                const idInput = document.getElementById('pubmed-ids').value.trim();
+                if (!idInput) {
+                    this.showNotification('Please enter PubMed IDs', 'error');
+                    return;
+                }
+                
+                const ids = idInput.split(',').map(id => id.trim()).filter(id => id);
+                
+                const resultsContainer = document.getElementById('pubmed-results');
+                resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Fetching references from PubMed...</p></div>';
+                
+                await this.fetchPubMedDetails(ids, resultsContainer);
+            }
+            
+            // Fetch details for PubMed IDs
+            async fetchPubMedDetails(ids, resultsContainer) {
+                try {
+                    // First get summary data
+                    const summaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(',')}&retmode=json`;
+                    const summaryResponse = await fetch(summaryUrl);
+                    const summaryData = await summaryResponse.json();
+                    
+                    const results = summaryData.result;
+                    const uids = results.uids;
+                    
+                    if (uids.length === 0) {
+                        resultsContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>No results found</p></div>';
+                        return;
+                    }
+
+                    // Now fetch abstracts using efetch
+                    const fetchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${ids.join(',')}&retmode=xml`;
+                    const fetchResponse = await fetch(fetchUrl);
+                    const fetchText = await fetchResponse.text();
+                    
+                    // Parse XML to extract abstracts
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(fetchText, "text/xml");
+                    const articles = xmlDoc.getElementsByTagName('PubmedArticle');
+                    
+                    const articlesWithAbstracts = {};
+                    
+                    for (let article of articles) {
+                        const pmid = article.getElementsByTagName('PMID')[0]?.textContent;
+                        const abstractElement = article.getElementsByTagName('AbstractText')[0];
+                        const abstract = abstractElement ? abstractElement.textContent : '';
+                        
+                        if (pmid) {
+                            articlesWithAbstracts[pmid] = abstract;
+                        }
+                    }
+                    
+                    let html = '<div class="pubmed-search-results">';
+                    
+                    uids.forEach(uid => {
+                        const article = results[uid];
+                        const title = article.title || 'No title available';
+                        const authors = article.authors ? article.authors.map(a => a.name).join(', ') : 'Unknown authors';
+                        const journal = article.source || 'Unknown journal';
+                        const pubDate = article.pubdate || 'Unknown date';
+                        const doi = article.articleids ? 
+                            article.articleids.find(id => id.idtype === 'doi')?.value : null;
+                        const abstract = articlesWithAbstracts[uid] || '';
+                        const url = `https://pubmed.ncbi.nlm.nih.gov/${uid}/`;
+                        
+                        html += `
+                            <div class="reference-item" data-pubmed-id="${uid}">
+                                <div class="reference-title">${title}</div>
+                                <div class="reference-authors">${authors}</div>
+                                <div class="reference-meta">
+                                    <span class="reference-journal">${journal}</span>
+                                    <span class="reference-year">${pubDate}</span>
+                                </div>
+                                ${doi ? `<div><strong>DOI:</strong> ${doi}</div>` : ''}
+                                ${abstract ? `<div><strong>Abstract:</strong> ${abstract.substring(0, 200)}${abstract.length > 200 ? '...' : ''}</div>` : ''}
+                                <div class="reference-actions">
+                                    <button class="btn btn-sm import-pubmed-reference" data-pubmed-id="${uid}">Import</button>
+                                    <button class="btn btn-sm btn-info popout-pubmed-reference" data-pubmed-id="${uid}">Popout</button>
+                                    <button class="btn btn-sm btn-outline" onclick="referenceManager.openPubMed('${url}')">Open PubMed</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    resultsContainer.innerHTML = html;
+                    
+                    // Add event listeners to import buttons
+                    document.querySelectorAll('.import-pubmed-reference').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const pubmedId = e.target.dataset.pubmedId;
+                            const article = results[pubmedId];
+                            const abstract = articlesWithAbstracts[pubmedId] || '';
+                            this.importPubMedReference(pubmedId, article, abstract);
+                        });
+                    });
+                    
+                    // Add event listeners to popout buttons for PubMed results
+                    document.querySelectorAll('.popout-pubmed-reference').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const pubmedId = e.target.dataset.pubmedId;
+                            const article = results[pubmedId];
+                            const abstract = articlesWithAbstracts[pubmedId] || '';
+                            this.showPubMedResultInPopup(pubmedId, article, abstract);
+                        });
+                    });
+                    
+                } catch (error) {
+                    console.error('PubMed fetch error:', error);
+                    resultsContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Error fetching PubMed details. Please try again.</p></div>';
+                }
+            }
+            
+            // Edit notes in detail view
+            editDetailNotes(id) {
+                const reference = this.references.find(ref => ref.id === id);
+                if (!reference) return;
+
+                const notesDisplay = document.getElementById('detail-notes-display');
+                const editButton = document.querySelector('.edit-detail-notes-btn');
+                
+                // Replace display with textarea for editing
+                notesDisplay.outerHTML = `
+                    <textarea id="detail-notes-edit" style="width: 100%; height: 150px; padding: 12px; border: 2px solid var(--primary-color); border-radius: var(--border-radius); margin-bottom: 12px; font-family: inherit; line-height: 1.5;">${reference.notes || ''}</textarea>
+                `;
+                
+                // Replace edit button with save/cancel buttons
+                editButton.outerHTML = `
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-success btn-sm" onclick="referenceManager.saveDetailNotes('${reference.id}')">Save Notes</button>
+                        <button class="btn btn-danger btn-sm" onclick="referenceManager.cancelDetailNotesEdit('${reference.id}')">Cancel</button>
+                    </div>
+                `;
+                
+                // Focus on the textarea
+                setTimeout(() => {
+                    const textarea = document.getElementById('detail-notes-edit');
+                    if (textarea) textarea.focus();
+                }, 100);
+            }
+
+            // Save notes from detail view editor
+            saveDetailNotes(id) {
+                const reference = this.references.find(ref => ref.id === id);
+                if (!reference) return;
+                
+                const notesEdit = document.getElementById('detail-notes-edit');
+                const newNotes = notesEdit.value.trim();
+                
+                // Update the reference
+                reference.notes = newNotes;
+                this.saveReferences();
+                
+                // Refresh the detail view to show updated notes
+                this.showReferenceDetails(id);
+                
+                this.showNotification('Notes updated successfully!', 'success');
+            }
+
+            // Cancel notes editing in detail view
+            cancelDetailNotesEdit(id) {
+                // Simply refresh the detail view to discard changes
+                this.showReferenceDetails(id);
+            }
+            
+            // Edit notes in popup window
+            editNotesInPopup(id) {
+                const reference = this.references.find(ref => ref.id === id);
+                if (!reference) return;
+                
+                const notesDisplay = document.getElementById('notes-display');
+                const editButton = document.querySelector('.edit-notes-btn');
+                
+                // Replace display with textarea for editing
+                notesDisplay.outerHTML = `
+                    <textarea id="notes-edit" style="width: 100%; height: 120px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px;">${reference.notes || ''}</textarea>
+                `;
+                
+                // Replace edit button with save/cancel buttons
+                editButton.outerHTML = `
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-sm btn-success" onclick="referenceManager.saveNotesInPopup('${reference.id}')">Save Notes</button>
+                        <button class="btn btn-sm btn-danger" onclick="referenceManager.cancelNotesEdit('${reference.id}')">Cancel</button>
+                    </div>
+                `;
+            }
+
+            // Save notes from popup editor
+            saveNotesInPopup(id) {
+                const reference = this.references.find(ref => ref.id === id);
+                if (!reference) return;
+                
+                const notesEdit = document.getElementById('notes-edit');
+                const newNotes = notesEdit.value.trim();
+                
+                // Update the reference
+                reference.notes = newNotes;
+                this.saveReferences();
+                
+                // Refresh the popup content to show updated notes
+                this.showReferenceInPopup(id);
+                
+                this.showNotification('Notes updated successfully!', 'success');
+            }
+
+            // Cancel notes editing in popup
+            cancelNotesEdit(id) {
+                // Simply refresh the popup to discard changes
+                this.showReferenceInPopup(id);
+            }
+            
+            // Show PubMed result in popup window
+            showPubMedResultInPopup(pubmedId, article, abstract) {
+                const title = article.title || 'No title available';
+                const authors = article.authors ? article.authors.map(a => a.name).join(', ') : 'Unknown authors';
+                const journal = article.source || 'Unknown journal';
+                const pubDate = article.pubdate || 'Unknown date';
+                const doi = article.articleids ? 
+                    article.articleids.find(id => id.idtype === 'doi')?.value : null;
+                const url = `https://pubmed.ncbi.nlm.nih.gov/${pubmedId}/`;
+                
+                const popupContent = `
+                    <div class="reference-item">
+                        <div class="reference-title">${title}</div>
+                        <div class="reference-authors">${authors}</div>
+                        <div class="reference-meta">
+                            <span class="reference-journal">${journal}</span>
+                            <span class="reference-year">${pubDate}</span>
+                        </div>
+                        ${doi ? `<div><strong>DOI:</strong> ${doi}</div>` : ''}
+                        <div>
+                            <strong>URL:</strong> 
+                            <a href="${url}" target="_blank">${url}</a>
+                            <button class="btn btn-outline btn-sm" onclick="referenceManager.openPubMed('${url}')">Open PubMed</button>
+                        </div>
+                        ${abstract ? `
+                            <div class="reference-abstract">
+                                <strong>Abstract:</strong> 
+                                <div style="white-space: pre-wrap;">${abstract}</div>
+                            </div>
+                        ` : ''}
+                        <div class="reference-actions">
+                            <button class="btn btn-success import-pubmed-reference" onclick="referenceManager.importPubMedReference('${pubmedId}', ${JSON.stringify(article).replace(/"/g, '&quot;')}, '${abstract.replace(/'/g, "\\'")}'); referenceManager.closePopup();">Import Reference</button>
+                        </div>
+                    </div>
+                `;
+                
+                this.openPopup(popupContent);
+            }
+            
+            // Import a PubMed reference
+            importPubMedReference(pubmedId, article, abstract) {
+                const title = article.title || 'Untitled';
+                const authors = article.authors ? article.authors.map(a => a.name) : ['Unknown'];
+                const journal = article.source || '';
+                const pubDate = article.pubdate || '';
+                const year = pubDate.match(/\d{4}/)?.[0] || null;
+                const doi = article.articleids ? 
+                    article.articleids.find(id => id.idtype === 'doi')?.value : null;
+                
+                // Create a new reference object
+                const newReference = {
+                    id: Date.now().toString(),
+                    title,
+                    authors,
+                    journal,
+                    notes: '',
+                    year: year ? parseInt(year) : null,
+                    doi,
+                    url: `https://pubmed.ncbi.nlm.nih.gov/${pubmedId}/`,
+                    abstract,
+                    tags: ['PubMed Import'],
+                    createdAt: new Date().toISOString()
+                };
+                
+                this.references.push(newReference);
+                this.saveReferences();
+                this.renderReferences();
+                this.updateFilters();
+                
+                // Switch to references tab
+                this.switchToTab('references');
+                
+                // Show success message
+                this.showNotification(`Reference "${title}" imported successfully!`, 'success');
+            }
+            
+            // Clear all references from localStorage
+            clearStorage() {
+                if (this.references.length === 0) {
+                    this.showNotification('No references to clear.', 'info');
+                    return;
+                }
+                
+                if (confirm(`Are you sure you want to delete ALL ${this.references.length} references? This action cannot be undone!`)) {
+                    this.references = [];
+                    this.saveReferences();
+                    this.renderReferences();
+                    this.updateFilters();
+                    
+                    // Clear details if viewing a reference
+                    document.getElementById('reference-details').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📄</div>
+                            <h3>No Reference Selected</h3>
+                            <p>Select a reference from your library to view details</p>
+                        </div>
+                    `;
+                    this.currentReferenceId = null;
+                    
+                    this.showNotification('All references have been cleared from storage.', 'success');
+                }
+            }
+        }
+        
+        // Initialize the application
+        let referenceManager;
+        document.addEventListener('DOMContentLoaded', () => {
+            referenceManager = new ReferenceManager();
+            
+            // Add CSV export event listener
+            document.getElementById('export-csv').addEventListener('click', () => {
+                referenceManager.exportCSV();
+            });
+        });
+    </script>
+</body>
+</html>

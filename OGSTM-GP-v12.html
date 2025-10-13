@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OGSTM Grant Proposal Assistant - Biology & Medicine</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --bio-green: #2ecc71;
+            --med-blue: #3498db;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #27ae60);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .field-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        
+        .field-btn {
+            padding: 8px 16px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .field-btn.active {
+            background: white;
+            color: #2c3e50;
+        }
+        
+        .field-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .ogstm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+        
+        .ogstm-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            border-top: 4px solid var(--bio-green);
+        }
+        
+        .ogstm-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bio-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .section-description {
+            margin-bottom: 1rem;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .bio-med-tip {
+            background: #e8f6f3;
+            border-left: 4px solid var(--bio-green);
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .textarea-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        
+        .textarea-header .btn {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: vertical;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            line-height: 1.7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--bio-green);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+            background-color: white;
+        }
+        
+        .ai-suggestions {
+            margin-top: 1rem;
+            background-color: var(--light);
+            padding: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .ai-suggestion {
+            background: white;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            border-radius: 4px;
+            border-left: 4px solid var(--bio-green);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .ai-suggestion:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .suggestion-type {
+            font-size: 0.8rem;
+            color: var(--bio-green);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .suggestion-confidence {
+            font-size: 0.8rem;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--bio-green);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #229954;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+            transform: translateY(-2px);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .file-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .export-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--light);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--bio-green), var(--med-blue));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .word-count {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .ai-loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .ai-analysis {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e8f6f3;
+            border-radius: 4px;
+            border-left: 4px solid var(--bio-green);
+        }
+        
+        .analysis-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .analysis-content {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .section-feedback {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .feedback-positive {
+            color: var(--success);
+        }
+        
+        .feedback-negative {
+            color: var(--accent);
+        }
+        
+        .grant-tips {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--med-blue);
+        }
+        
+        .tips-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tip-item {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .tip-item:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .fullscreen-textarea {
+            min-height: 80vh;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .fullscreen-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+        
+        .fullscreen-btn {
+            background: var(--bio-green);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-name-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 200px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+        }
+        
+        .preview-content {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #2c3e50, #27ae60);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer p {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .ogstm-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .export-options {
+                flex-direction: column;
+            }
+            
+            .field-selector {
+                flex-wrap: wrap;
+            }
+            
+            .footer {
+                padding: 1rem 0;
+                margin-top: 2rem;
+            }
+            
+            .footer p {
+                font-size: 0.9rem;
+            }
+            
+            .file-controls {
+                flex-direction: column;
+            }
+            
+            .file-name-input {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
+            }
+        }
+
+.footer {
+    background: linear-gradient(135deg, #2c3e50, #27ae60);
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 3rem;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <!-- File Name Modal -->
+    <div class="modal" id="fileNameModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Save Grant Proposal</h3>
+            <p>Enter a name for your grant proposal file:</p>
+            <input type="text" id="fileNameInput" class="file-name-input" placeholder="GP-MyResearchProject" value="GP-">
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeFileNameModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveToFile()">Save File</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="previewTitle">Document Preview</h3>
+            <div class="preview-content" id="previewContent">
+                <!-- Preview content will be inserted here -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closePreviewModal()">Close</button>
+                <button class="btn btn-primary" onclick="downloadPreview()">Download</button>
+            </div>
+        </div>
+    </div>
+    
+    <header>
+        <div class="container">
+            <h1>OGSTM Grant Proposal Assistant</h1>
+            <p class="subtitle">Specialized for Biology & Medicine Research Grants</p>
+            <div class="field-selector">
+                <button class="field-btn active" data-field="biology">Biology</button>
+                <button class="field-btn" data-field="medicine">Medicine</button>
+                <button class="field-btn" data-field="biomedical">Biomedical</button>
+                <button class="field-btn" data-field="clinical">Clinical Research</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="grant-tips">
+            <div class="tips-title">💡 NIH Grant Writing Tips</div>
+            <div class="tip-item"><strong>Specific Aims:</strong> Limit to 1 page with 3-5 clear, focused aims that test your central hypothesis</div>
+            <div class="tip-item"><strong>Hypothesis:</strong> Should be testable, mechanistic, and directly linked to your specific aims</div>
+            <div class="tip-item"><strong>Preliminary Results:</strong> Include compelling data that demonstrates feasibility and expertise</div>
+            <div class="tip-item"><strong>Innovation:</strong> Clearly state how your approach is novel and moves the field forward</div>
+            <div class="tip-item"><strong>Significance:</strong> Explain how your research addresses an important biological or clinical problem</div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="ogstm-grid">
+            <div class="ogstm-section">
+                <div class="section-header">
+                    <h2 class="section-title">Objective & Hypothesis</h2>
+                    <div class="section-icon">O</div>
+                </div>
+                <p class="section-description">State your central research question and testable hypothesis. Be specific about the biological mechanism or clinical problem you're addressing.</p>
+                <div class="bio-med-tip">
+                    <strong>Pro Tip:</strong> Your hypothesis should be mechanistic - explain HOW or WHY a biological process works, not just THAT it works.
+                </div>
+                <div class="textarea-header">
+                    <button class="btn btn-secondary" onclick="toggleFullscreen('objective')">
+                        ⛶ Fullscreen
+                    </button>
+                </div>
+                <textarea id="objective" placeholder="Example: We hypothesize that inhibition of protein X will reduce tumor growth by disrupting the Y signaling pathway..."></textarea>
+                <div class="word-count">Words: <span id="objective-count">0</span></div>
+                <div class="section-feedback" id="objective-feedback"></div>
+                <button class="btn btn-secondary" onclick="getAISuggestion('objective')">
+                    <span class="ai-loading" style="display: none;" id="objective-loading"></span>
+                    Get AI Suggestions
+                </button>
+                <div class="ai-suggestions" id="objective-suggestions"></div>
+                <div class="ai-analysis" id="objective-analysis" style="display: none;">
+                    <div class="analysis-title">🔬 Scientific Analysis</div>
+                    <div class="analysis-content" id="objective-analysis-content"></div>
+                </div>
+            </div>
+            
+            <div class="ogstm-section">
+                <div class="section-header">
+                    <h2 class="section-title">Specific Aims</h2>
+                    <div class="section-icon">G</div>
+                </div>
+                <p class="section-description">List 3-5 specific, measurable, and achievable aims that directly test your hypothesis. Each aim should have a clear outcome.</p>
+                <div class="bio-med-tip">
+                    <strong>Pro Tip:</strong> Use strong verbs: Characterize, Determine, Identify, Validate, Establish. Each aim should be a mini-project.
+                </div>
+                <div class="textarea-header">
+                    <button class="btn btn-secondary" onclick="toggleFullscreen('goals')">
+                        ⛶ Fullscreen
+                    </button>
+                </div>
+                <textarea id="goals" placeholder="Example: 
+Aim 1: Characterize the expression of protein X in human tumor samples...
+Aim 2: Determine the functional role of protein X using knockout models...
+Aim 3: Validate protein X as a therapeutic target using inhibitor Y..."></textarea>
+                <div class="word-count">Words: <span id="goals-count">0</span></div>
+                <div class="section-feedback" id="goals-feedback"></div>
+                <button class="btn btn-secondary" onclick="getAISuggestion('goals')">
+                    <span class="ai-loading" style="display: none;" id="goals-loading"></span>
+                    Get AI Suggestions
+                </button>
+                <div class="ai-suggestions" id="goals-suggestions"></div>
+                <div class="ai-analysis" id="goals-analysis" style="display: none;">
+                    <div class="analysis-title">🔬 Scientific Analysis</div>
+                    <div class="analysis-content" id="goals-analysis-content"></div>
+                </div>
+            </div>
+            
+            <div class="ogstm-section">
+                <div class="section-header">
+                    <h2 class="section-title">Preliminary Results</h2>
+                    <div class="section-icon">S</div>
+                </div>
+                <p class="section-description">Present your key preliminary data that supports feasibility and demonstrates your expertise. Include figures and statistical analyses.</p>
+                <div class="bio-med-tip">
+                    <strong>Pro Tip:</strong> Focus on your most compelling data that directly supports your hypothesis and shows you can complete the proposed work.
+                </div>
+                <div class="textarea-header">
+                    <button class="btn btn-secondary" onclick="toggleFullscreen('strategy')">
+                        ⛶ Fullscreen
+                    </button>
+                </div>
+                <textarea id="strategy" placeholder="Example: Our preliminary data shows that protein X is overexpressed in 80% of tumor samples (n=45, p<0.001). We have established knockout models and confirmed reduced tumor growth..."></textarea>
+                <div class="word-count">Words: <span id="strategy-count">0</span></div>
+                <div class="section-feedback" id="strategy-feedback"></div>
+                <button class="btn btn-secondary" onclick="getAISuggestion('strategy')">
+                    <span class="ai-loading" style="display: none;" id="strategy-loading"></span>
+                    Get AI Suggestions
+                </button>
+                <div class="ai-suggestions" id="strategy-suggestions"></div>
+                <div class="ai-analysis" id="strategy-analysis" style="display: none;">
+                    <div class="analysis-title">🔬 Scientific Analysis</div>
+                    <div class="analysis-content" id="strategy-analysis-content"></div>
+                </div>
+            </div>
+            
+            <div class="ogstm-section">
+                <div class="section-header">
+                    <h2 class="section-title">Research Strategy</h2>
+                    <div class="section-icon">T</div>
+                </div>
+                <p class="section-description">Detail your experimental approach, methods, and anticipated outcomes. Include controls, statistical plans, and potential pitfalls.</p>
+                <div class="bio-med-tip">
+                    <strong>Pro Tip:</strong> Address alternative outcomes and how you will interpret them. Show reviewers you've thought through potential challenges.
+                </div>
+                <div class="textarea-header">
+                    <button class="btn btn-secondary" onclick="toggleFullscreen('tactics')">
+                        ⛶ Fullscreen
+                    </button>
+                </div>
+                <textarea id="tactics" placeholder="Example: We will use CRISPR/Cas9 to generate knockout models. For Aim 1, we will perform IHC on tissue microarrays (n=100). Statistical power analysis indicates n=8/group will detect 30% difference with 80% power..."></textarea>
+                <div class="word-count">Words: <span id="tactics-count">0</span></div>
+                <div class="section-feedback" id="tactics-feedback"></div>
+                <button class="btn btn-secondary" onclick="getAISuggestion('tactics')">
+                    <span class="ai-loading" style="display: none;" id="tactics-loading"></span>
+                    Get AI Suggestions
+                </button>
+                <div class="ai-suggestions" id="tactics-suggestions"></div>
+                <div class="ai-analysis" id="tactics-analysis" style="display: none;">
+                    <div class="analysis-title">🔬 Scientific Analysis</div>
+                    <div class="analysis-content" id="tactics-analysis-content"></div>
+                </div>
+            </div>
+            
+            <div class="ogstm-section">
+                <div class="section-header">
+                    <h2 class="section-title">Impact & Measurement</h2>
+                    <div class="section-icon">M</div>
+                </div>
+                <p class="section-description">Explain the significance and expected impact of your research. Detail how you will measure success and evaluate outcomes.</p>
+                <div class="bio-med-tip">
+                    <strong>Pro Tip:</strong> Connect your findings to broader biological understanding or clinical applications. How will your work change practice or thinking?
+                </div>
+                <div class="textarea-header">
+                    <button class="btn btn-secondary" onclick="toggleFullscreen('measurement')">
+                        ⛶ Fullscreen
+                    </button>
+                </div>
+                <textarea id="measurement" placeholder="Example: This research will establish protein X as a novel therapeutic target. Success will be measured by: 1) Statistical significance in tumor reduction, 2) Publication in high-impact journals, 3) Development of preclinical data for IND application..."></textarea>
+                <div class="word-count">Words: <span id="measurement-count">0</span></div>
+                <div class="section-feedback" id="measurement-feedback"></div>
+                <button class="btn btn-secondary" onclick="getAISuggestion('measurement')">
+                    <span class="ai-loading" style="display: none;" id="measurement-loading"></span>
+                    Get AI Suggestions
+                </button>
+                <div class="ai-suggestions" id="measurement-suggestions"></div>
+                <div class="ai-analysis" id="measurement-analysis" style="display: none;">
+                    <div class="analysis-title">🔬 Scientific Analysis</div>
+                    <div class="analysis-content" id="measurement-analysis-content"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div>
+                <button class="btn btn-primary" onclick="saveProposal()">Save Draft</button>
+                <button class="btn btn-warning" onclick="analyzeNIHScore()">Predict NIH Score</button>
+                <button class="btn btn-accent" onclick="showPreview('nih')">Export for NIH</button>
+            </div>
+        </div>
+        
+        <div class="file-controls">
+            <button class="btn btn-primary" onclick="showFileNameModal()">Save to File</button>
+            <button class="btn btn-secondary" onclick="triggerFileInput()">Load from File</button>
+            <input type="file" id="fileInput" class="file-input" accept=".json" onchange="loadFromFile(event)">
+        </div>
+        
+        <div class="export-section">
+            <h2>NIH Grant Export</h2>
+            <p>Generate formatted documents for your NIH grant application:</p>
+            <div class="export-options">
+                <button class="btn btn-primary" onclick="showPreview('specificAims')">Specific Aims (1 page)</button>
+                <button class="btn btn-primary" onclick="showPreview('researchStrategy')">Research Strategy</button>
+                <button class="btn btn-primary" onclick="showPreview('fullApplication')">Full Application</button>
+                <button class="btn btn-primary" onclick="showPreview('preliminaryResults')">Preliminary Results Figures</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Copyright 2025 Dr. Wen-Ming Yang Lab Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // Track word counts and update progress
+        const textareas = document.querySelectorAll('textarea');
+        
+        // Global variables for preview functionality
+        let currentPreviewContent = '';
+        let currentPreviewFilename = '';
+        
+        textareas.forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                updateWordCountWithGoal(this.id);
+                updateProgress();
+                updateSectionFeedback(this.id);
+            });
+        });
+        
+        function updateProgress() {
+            let totalWords = 0;
+            let filledSections = 0;
+            
+            textareas.forEach(textarea => {
+                const wordCount = textarea.value.trim() ? textarea.value.trim().split(/\s+/).length : 0;
+                totalWords += wordCount;
+                
+                if (wordCount > 0) {
+                    filledSections++;
+                }
+            });
+            
+            // Update progress bar (weighted by both completion and word count)
+            const sectionProgress = (filledSections / textareas.length) * 50;
+            const wordProgress = Math.min((totalWords / 1500) * 50, 50); // Max 1500 words = 50%
+            const totalProgress = sectionProgress + wordProgress;
+            
+            document.getElementById('progress').style.width = `${totalProgress}%`;
+        }
+        
+        function updateSectionFeedback(sectionId) {
+            const textarea = document.getElementById(sectionId);
+            const feedbackElement = document.getElementById(`${sectionId}-feedback`);
+            const wordCount = textarea.value.trim() ? textarea.value.trim().split(/\s+/).length : 0;
+            
+            if (wordCount === 0) {
+                feedbackElement.innerHTML = '<span class="feedback-negative">⚠️ This section is empty</span>';
+            } else if (wordCount < 50 && (sectionId === 'objective' || sectionId === 'strategy')) {
+                feedbackElement.innerHTML = '<span class="feedback-negative">⚠️ Needs more scientific detail</span>';
+            } else if (wordCount < 30) {
+                feedbackElement.innerHTML = '<span class="feedback-negative">⚠️ Consider adding more detail</span>';
+            } else if (wordCount < 150) {
+                feedbackElement.innerHTML = '<span class="feedback-positive">✓ Good start, keep developing</span>';
+            } else {
+                feedbackElement.innerHTML = '<span class="feedback-positive">✓ Well developed section</span>';
+            }
+        }
+        
+        // Word count with goal indicator
+        function updateWordCountWithGoal(section) {
+            const textarea = document.getElementById(section);
+            const wordCount = textarea.value.trim() ? textarea.value.trim().split(/\s+/).length : 0;
+            const countElement = document.getElementById(`${section}-count`);
+            
+            // Set word count goals for each section
+            const goals = {
+                'objective': 150,
+                'goals': 200,
+                'strategy': 300,
+                'tactics': 400,
+                'measurement': 150
+            };
+            
+            const goal = goals[section] || 200;
+            const percentage = Math.min((wordCount / goal) * 100, 100);
+            
+            countElement.innerHTML = `
+                <span style="color: ${wordCount >= goal ? '#27ae60' : '#7f8c8d'}">
+                    ${wordCount} / ${goal} words (${Math.round(percentage)}%)
+                </span>
+            `;
+        }
+        
+        // Fullscreen writing mode
+        function toggleFullscreen(section) {
+            const textarea = document.getElementById(section);
+            const isFullscreen = textarea.classList.contains('fullscreen-textarea');
+            
+            if (!isFullscreen) {
+                // Enter fullscreen
+                textarea.classList.add('fullscreen-textarea');
+                textarea.parentElement.classList.add('fullscreen-mode');
+                
+                // Add exit button
+                const controlsDiv = document.createElement('div');
+                controlsDiv.className = 'fullscreen-controls';
+                controlsDiv.id = `controls-${section}`;
+                
+                const exitBtn = document.createElement('button');
+                exitBtn.className = 'fullscreen-btn';
+                exitBtn.innerHTML = '✕ Exit Fullscreen';
+                exitBtn.onclick = () => toggleFullscreen(section);
+                
+                controlsDiv.appendChild(exitBtn);
+                document.body.appendChild(controlsDiv);
+                
+                showNotification('Fullscreen mode activated. Focus on your writing!');
+            } else {
+                // Exit fullscreen
+                textarea.classList.remove('fullscreen-textarea');
+                textarea.parentElement.classList.remove('fullscreen-mode');
+                
+                // Remove exit button
+                const controlsDiv = document.getElementById(`controls-${section}`);
+                if (controlsDiv) {
+                    controlsDiv.remove();
+                }
+                
+                showNotification('Exited fullscreen mode');
+            }
+        }
+        
+        // Field selector functionality
+        document.querySelectorAll('.field-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.field-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Update the AI suggestions based on selected field
+                const field = this.getAttribute('data-field');
+                showNotification(`Field changed to: ${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            });
+        });
+        
+        // Notification system
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // File management functions
+        function showFileNameModal() {
+            document.getElementById('fileNameModal').style.display = 'flex';
+            document.getElementById('fileNameInput').focus();
+        }
+        
+        function closeFileNameModal() {
+            document.getElementById('fileNameModal').style.display = 'none';
+        }
+        
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+        
+        function saveToFile() {
+            const fileName = document.getElementById('fileNameInput').value.trim();
+            if (!fileName) {
+                showNotification('Please enter a file name');
+                return;
+            }
+            
+            const proposal = {
+                objective: document.getElementById('objective').value,
+                goals: document.getElementById('goals').value,
+                strategy: document.getElementById('strategy').value,
+                tactics: document.getElementById('tactics').value,
+                measurement: document.getElementById('measurement').value,
+                lastSaved: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(proposal, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.download = `${fileName}.json`;
+            link.href = url;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            closeFileNameModal();
+            showNotification(`Grant proposal saved as ${fileName}.json`);
+        }
+        
+        function loadFromFile(event) {
+            const file = event.target.files[0];
+            
+            if (!file) {
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const proposal = JSON.parse(e.target.result);
+                    
+                    // FIXED: More flexible validation that accepts empty strings
+                    if (proposal && typeof proposal === 'object') {
+                        // Load the proposal data with fallbacks for empty values
+                        document.getElementById('objective').value = proposal.objective || '';
+                        document.getElementById('goals').value = proposal.goals || '';
+                        document.getElementById('strategy').value = proposal.strategy || '';
+                        document.getElementById('tactics').value = proposal.tactics || '';
+                        document.getElementById('measurement').value = proposal.measurement || '';
+                        
+                        // Update word counts, progress, and feedback
+                        textareas.forEach(textarea => {
+                            updateWordCountWithGoal(textarea.id);
+                            updateSectionFeedback(textarea.id);
+                        });
+                        
+                        updateProgress();
+                        showNotification('Grant proposal loaded successfully!');
+                    } else {
+                        showNotification('Invalid file format: Not a valid JSON object');
+                    }
+                    
+                    // Reset file input
+                    event.target.value = '';
+                } catch (error) {
+                    showNotification('Error loading file: ' + error.message);
+                    event.target.value = '';
+                }
+            };
+            reader.onerror = function() {
+                showNotification('Error reading file');
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+        
+        // Preview functionality
+        function showPreview(type) {
+            let content = '';
+            let title = '';
+            let filename = '';
+            
+            switch(type) {
+                case 'nih':
+                    content = generateNIHContent();
+                    title = 'NIH Grant Application Preview';
+                    filename = 'NIH_Grant_Application.txt';
+                    break;
+                case 'specificAims':
+                    content = generateSpecificAimsContent();
+                    title = 'Specific Aims Preview';
+                    filename = 'Specific_Aims.txt';
+                    break;
+                case 'researchStrategy':
+                    content = generateResearchStrategyContent();
+                    title = 'Research Strategy Preview';
+                    filename = 'Research_Strategy.txt';
+                    break;
+                case 'fullApplication':
+                    content = generateFullApplicationContent();
+                    title = 'Full Application Preview';
+                    filename = 'Full_Grant_Application.txt';
+                    break;
+                case 'preliminaryResults':
+                    content = generatePreliminaryResultsContent();
+                    title = 'Preliminary Results Preview';
+                    filename = 'Preliminary_Results.txt';
+                    break;
+            }
+            
+            // Store for download
+            currentPreviewContent = content;
+            currentPreviewFilename = filename;
+            
+            // Show preview
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewContent').textContent = content;
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+        
+        function closePreviewModal() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+        
+        function downloadPreview() {
+            const dataBlob = new Blob([currentPreviewContent], {type: 'text/plain'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.download = currentPreviewFilename;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+            closePreviewModal();
+            showNotification(`Downloaded ${currentPreviewFilename}`);
+        }
+        
+        // Content generation functions for preview
+        function generateNIHContent() {
+            return `NIH GRANT APPLICATION - COMPLETE DRAFT
+
+PROJECT SUMMARY/ABSTRACT:
+${document.getElementById('objective').value || '[No content yet]'}
+
+SPECIFIC AIMS:
+${document.getElementById('goals').value || '[No content yet]'}
+
+RESEARCH STRATEGY:
+A. Significance
+${document.getElementById('objective').value || '[No content yet]'}
+
+B. Innovation
+${document.getElementById('strategy').value || '[No content yet]'}
+
+C. Approach
+${document.getElementById('tactics').value || '[No content yet]'}
+
+PRELIMINARY STUDIES:
+${document.getElementById('strategy').value || '[No content yet]'}
+
+RESEARCH DESIGN AND METHODS:
+${document.getElementById('tactics').value || '[No content yet]'}
+
+EXPECTED OUTCOMES AND IMPACT:
+${document.getElementById('measurement').value || '[No content yet]'}
+
+===== NIH FORMATTED DOCUMENT =====
+Generated using OGSTM Grant Proposal Assistant
+Copyright 2025 Dr. Wen-Ming Yang Lab`;
+        }
+        
+        function generateSpecificAimsContent() {
+            const content = document.getElementById('goals').value;
+            return `SPECIFIC AIMS\n\n${content || '[No content yet - Please add your specific aims in the Goals section]'}`;
+        }
+        
+        function generateResearchStrategyContent() {
+            return `RESEARCH STRATEGY
+
+SIGNIFICANCE:
+${document.getElementById('objective').value || '[No content yet]'}
+
+INNOVATION:
+${document.getElementById('strategy').value || '[No content yet]'}
+
+APPROACH:
+${document.getElementById('tactics').value || '[No content yet]'}
+
+PRELIMINARY STUDIES:
+${document.getElementById('strategy').value || '[No content yet]'}
+
+RESEARCH DESIGN:
+${document.getElementById('tactics').value || '[No content yet]'}`;
+        }
+        
+        function generateFullApplicationContent() {
+            return `COMPLETE GRANT APPLICATION DRAFT
+
+PROJECT SUMMARY:
+${document.getElementById('objective').value || '[No content yet]'}
+
+SPECIFIC AIMS:
+${document.getElementById('goals').value || '[No content yet]'}
+
+BACKGROUND AND SIGNIFICANCE:
+${document.getElementById('objective').value || '[No content yet]'}
+
+PRELIMINARY RESULTS:
+${document.getElementById('strategy').value || '[No content yet]'}
+
+RESEARCH DESIGN AND METHODS:
+${document.getElementById('tactics').value || '[No content yet]'}
+
+EXPECTED OUTCOMES:
+${document.getElementById('measurement').value || '[No content yet]'}
+
+BUDGET JUSTIFICATION:
+[Budget details to be added]
+
+BIOGRAPHICAL SKETCH:
+[Investigator bios to be added]
+
+RESOURCES AND ENVIRONMENT:
+[Facility details to be added]
+
+===== COMPLETE APPLICATION DRAFT =====
+Generated using OGSTM Grant Proposal Assistant
+Copyright 2025 Dr. Wen-Ming Yang Lab`;
+        }
+        
+        function generatePreliminaryResultsContent() {
+            const content = document.getElementById('strategy').value;
+            return `PRELIMINARY RESULTS\n\nSUMMARY OF KEY FINDINGS:\n${content || '[No content yet - Please add your preliminary results in the Preliminary Results section]'}\n\nFIGURE LEGENDS:\n[Figure 1: Description of key preliminary data]\n[Figure 2: Statistical analysis results]\n[Figure 3: Experimental validation data]\n\nSTATISTICAL ANALYSIS:\n[Detailed statistical methods and results]\n\nCONCLUSIONS FROM PRELIMINARY DATA:\n${document.getElementById('objective').value || '[No content yet]'}`;
+        }
+        
+        // AI Suggestion Functionality for Biology/Medicine
+        function getAISuggestion(section) {
+            const loadingElement = document.getElementById(`${section}-loading`);
+            const suggestionsContainer = document.getElementById(`${section}-suggestions`);
+            const analysisContainer = document.getElementById(`${section}-analysis`);
+            const analysisContent = document.getElementById(`${section}-analysis-content`);
+            
+            // Show loading state
+            loadingElement.style.display = 'inline-block';
+            suggestionsContainer.innerHTML = '<div class="ai-suggestion">Analyzing your scientific content and generating field-specific suggestions...</div>';
+            suggestionsContainer.style.display = 'block';
+            
+            // Get user's current content
+            const userContent = document.getElementById(section).value;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                loadingElement.style.display = 'none';
+                
+                // Generate context-aware suggestions for bio/med
+                const suggestions = generateBioMedSuggestions(section, userContent);
+                suggestionsContainer.innerHTML = '';
+                
+                if (suggestions.suggestions.length === 0) {
+                    suggestionsContainer.innerHTML = '<div class="ai-suggestion">No specific suggestions available. Try adding more scientific content to this section.</div>';
+                } else {
+                    suggestions.suggestions.forEach(suggestion => {
+                        const suggestionElement = document.createElement('div');
+                        suggestionElement.className = 'ai-suggestion';
+                        
+                        suggestionElement.innerHTML = `
+                            <div class="suggestion-header">
+                                <span class="suggestion-type">${suggestion.type}</span>
+                                <span class="suggestion-confidence">${suggestion.confidence}</span>
+                            </div>
+                            <div class="suggestion-text">${suggestion.text}</div>
+                        `;
+                        
+                        suggestionElement.onclick = function() {
+                            document.getElementById(section).value += '\n' + suggestion.text;
+                            updateProgress();
+                            updateSectionFeedback(section);
+                            updateWordCountWithGoal(section);
+                            showNotification('Suggestion added to your proposal');
+                        };
+                        
+                        suggestionsContainer.appendChild(suggestionElement);
+                    });
+                }
+                
+                // Show analysis
+                if (suggestions.analysis) {
+                    analysisContent.innerHTML = suggestions.analysis;
+                    analysisContainer.style.display = 'block';
+                }
+            }, 2000);
+        }
+        
+        // Generate Biology/Medicine specific suggestions
+        function generateBioMedSuggestions(section, userContent) {
+            const words = userContent.trim() ? userContent.trim().split(/\s+/) : [];
+            const wordCount = words.length;
+            
+            // Analyze scientific content
+            const hasHypothesis = /hypothesize|hypothesis|predict|propose/i.test(userContent);
+            const hasMechanism = /mechanism|pathway|signaling|molecular/i.test(userContent);
+            const hasStats = /p\s*[<=>]\s*0\.\d+|n\s*=\s*\d+|power analysis|statistical/i.test(userContent);
+            const hasMethods = /CRISPR|qPCR|Western|IHC|RNA-seq|microscopy|LC-MS/i.test(userContent);
+            const hasAimStructure = /Aim \d+:|Specific Aim|aim to/i.test(userContent);
+            const hasPrelimData = /preliminary|data shows|we found|results indicate/i.test(userContent);
+            
+            let suggestions = [];
+            let analysis = "";
+            
+            // Section-specific analysis and suggestions for bio/med
+            switch(section) {
+                case 'objective':
+                    analysis = !hasHypothesis 
+                        ? "Your objective should clearly state a testable hypothesis. NIH reviewers expect a mechanistic hypothesis." 
+                        : hasMechanism 
+                            ? "Good mechanistic hypothesis. Ensure it's directly testable by your specific aims."
+                            : "Consider adding the biological mechanism to your hypothesis.";
+                    
+                    if (!hasHypothesis) {
+                        suggestions.push({
+                            type: "Hypothesis Framework",
+                            confidence: "96% relevant",
+                            text: "We hypothesize that [manipulation] will [effect] through [mechanism] in [model system]."
+                        });
+                    }
+                    
+                    if (!hasMechanism && hasHypothesis) {
+                        suggestions.push({
+                            type: "Mechanistic Depth",
+                            confidence: "92% relevant",
+                            text: "Add the biological mechanism to your hypothesis. Example: '...by disrupting the MAPK signaling pathway' or '...through enhanced mitochondrial biogenesis'."
+                        });
+                    }
+                    
+                    suggestions.push({
+                        type: "NIH Alignment",
+                        confidence: "88% relevant",
+                        text: "Connect your hypothesis to an NIH institute's mission or a specific funding announcement (PA/RFA)."
+                    });
+                    break;
+                    
+                case 'goals':
+                    analysis = !hasAimStructure 
+                        ? "Structure your aims clearly with 'Aim 1:', 'Aim 2:' etc. Each aim should be a focused, testable objective." 
+                        : "Good aim structure. Ensure each aim has a clear endpoint and methodology.";
+                    
+                    if (!hasAimStructure) {
+                        suggestions.push({
+                            type: "Aim Structure",
+                            confidence: "95% relevant",
+                            text: "Use numbered aims with strong verbs: 'Aim 1: Characterize...', 'Aim 2: Determine...', 'Aim 3: Validate...'"
+                        });
+                    }
+                    
+                    if (wordCount > 0 && !hasMethods) {
+                        suggestions.push({
+                            type: "Methodology",
+                            confidence: "90% relevant",
+                            text: "Briefly mention key methods for each aim to demonstrate feasibility: 'using CRISPR/Cas9', 'by RNA-seq analysis', 'with patient-derived organoids'."
+                        });
+                    }
+                    
+                    suggestions.push({
+                        type: "Aim Integration",
+                        confidence: "85% relevant",
+                        text: "Ensure aims are sequential or complementary. Later aims should build on earlier ones or provide alternative approaches."
+                    });
+                    break;
+                    
+                case 'strategy':
+                    analysis = !hasPrelimData 
+                        ? "Include your strongest preliminary data that demonstrates feasibility and expertise." 
+                        : !hasStats
+                            ? "Add statistical analysis to your preliminary data to strengthen your case."
+                            : "Strong preliminary data. Connect it directly to your hypothesis and specific aims.";
+                    
+                    if (!hasPrelimData) {
+                        suggestions.push({
+                            type: "Data Presentation",
+                            confidence: "94% relevant",
+                            text: "Present key findings with statistical support: 'Our data show a 2.5-fold increase in protein expression (p<0.01, n=8)'."
+                        });
+                    }
+                    
+                    if (!hasStats && hasPrelimData) {
+                        suggestions.push({
+                            type: "Statistical Rigor",
+                            confidence: "91% relevant",
+                            text: "Add statistical measures to your data: sample sizes (n=X), p-values, error bars, or effect sizes."
+                        });
+                    }
+                    
+                    suggestions.push({
+                        type: "Feasibility",
+                        confidence: "89% relevant",
+                        text: "Explicitly state how your preliminary data demonstrates you can complete the proposed work successfully."
+                    });
+                    break;
+                    
+                case 'tactics':
+                    analysis = !hasMethods 
+                        ? "Detail your experimental approaches and methods. Include controls and statistical plans." 
+                        : "Good methodological detail. Address potential pitfalls and alternative approaches.";
+                    
+                    if (!hasMethods) {
+                        suggestions.push({
+                            type: "Technical Details",
+                            confidence: "93% relevant",
+                            text: "Specify key methods: 'CRISPR/Cas9 knockout', 'single-cell RNA sequencing', 'multiplex IHC', 'LC-MS proteomics'."
+                        });
+                    }
+                    
+                    if (wordCount > 0 && !hasStats) {
+                        suggestions.push({
+                            type: "Statistical Plan",
+                            confidence: "90% relevant",
+                            text: "Include your statistical approach: 'Power analysis indicates n=10/group will detect 30% difference with 80% power at α=0.05'."
+                        });
+                    }
+                    
+                    suggestions.push({
+                        type: "Alternative Approaches",
+                        confidence: "87% relevant",
+                        text: "Address what you will do if experiments fail or yield unexpected results. Show reviewers you've considered alternatives."
+                    });
+                    break;
+                    
+                case 'measurement':
+                    analysis = wordCount < 40 
+                        ? "Clearly articulate the significance and expected impact of your research." 
+                        : "Good impact statement. Connect your findings to broader biological or clinical implications.";
+                    
+                    if (wordCount < 50) {
+                        suggestions.push({
+                            type: "Significance",
+                            confidence: "92% relevant",
+                            text: "Explain how your work will advance the field: 'This research will establish a new paradigm for...' or 'Our findings may lead to novel therapeutic strategies for...'"
+                        });
+                    }
+                    
+                    suggestions.push({
+                        type: "Impact Metrics",
+                        confidence: "88% relevant",
+                        text: "Define success metrics: 'Primary outcome: 40% reduction in tumor volume; Secondary outcomes: biomarker changes, pathway activation'."
+                    });
+                    
+                    suggestions.push({
+                        type: "Translation Potential",
+                        confidence: "85% relevant",
+                        text: "Discuss how your basic science findings could translate to clinical applications or inform future studies."
+                    });
+                    break;
+            }
+            
+            // If user hasn't written anything, provide field-specific starting points
+            if (wordCount === 0) {
+                const fieldSpecificStarter = {
+                    'objective': "We hypothesize that targeted inhibition of the PI3K/AKT pathway will overcome resistance to standard chemotherapy in triple-negative breast cancer by restoring apoptotic sensitivity.",
+                    'goals': "Aim 1: Characterize PI3K/AKT activation in chemotherapy-resistant TNBC patient samples.\nAim 2: Determine the functional consequences of PI3K inhibition using patient-derived organoids.\nAim 3: Validate combination therapy efficacy in PDX models.",
+                    'strategy': "Our preliminary RNA-seq data shows PI3K pathway enrichment in chemo-resistant tumors (n=12, FDR<0.05). We have established 8 PDX models and confirmed AKT phosphorylation increases after chemotherapy.",
+                    'tactics': "We will use multiplex IHC to quantify pathway activation in 100 TNBC samples. Organoids will be treated with PI3K inhibitor GDC-0941. Statistical analysis will use two-way ANOVA with Tukey's post-test.",
+                    'measurement': "Success will be defined as: 1) >50% tumor reduction in combination therapy, 2) Identification of predictive biomarkers, 3) Publication and preliminary data for clinical trial planning."
+                };
+                
+                suggestions = [{
+                    type: "Field-Specific Template",
+                    confidence: "Starter template",
+                    text: fieldSpecificStarter[section]
+                }];
+                
+                analysis = "This section is empty. I've provided a biology/medicine-specific template to help you get started. Customize it for your specific research.";
+            }
+            
+            return { suggestions, analysis };
+        }
+        
+        // Analyze NIH scoring potential
+        function analyzeNIHScore() {
+            let score = 0;
+            let feedback = [];
+            
+            // Simple scoring algorithm based on content quality indicators
+            textareas.forEach(textarea => {
+                const content = textarea.value;
+                const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+                
+                if (wordCount > 50) score += 10;
+                if (content.includes('hypothesis') || content.includes('hypothesize')) score += 5;
+                if (content.includes('Aim')) score += 5;
+                if (content.includes('preliminary') || content.includes('data')) score += 5;
+                if (content.includes('p<') || content.includes('n=')) score += 5;
+            });
+            
+            // Generate feedback based on score
+            if (score >= 40) {
+                feedback.push("Strong proposal foundation - likely competitive for NIH funding");
+            } else if (score >= 25) {
+                feedback.push("Good start - focus on strengthening hypothesis and preliminary data");
+            } else {
+                feedback.push("Needs significant development - prioritize specific aims and hypothesis");
+            }
+            
+            alert(`NIH Score Estimate: ${score}/50\n\nKey Recommendations:\n${feedback.join('\n')}`);
+        }
+        
+        // Save proposal to localStorage
+        function saveProposal() {
+            const proposal = {
+                objective: document.getElementById('objective').value,
+                goals: document.getElementById('goals').value,
+                strategy: document.getElementById('strategy').value,
+                tactics: document.getElementById('tactics').value,
+                measurement: document.getElementById('measurement').value,
+                lastSaved: new Date().toISOString()
+            };
+            
+            localStorage.setItem('bioMedGrantProposal', JSON.stringify(proposal));
+            showNotification('Proposal saved successfully!');
+        }
+        
+        // Load saved proposal if available
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedProposal = localStorage.getItem('bioMedGrantProposal');
+            
+            if (savedProposal) {
+                try {
+                    const proposal = JSON.parse(savedProposal);
+                    document.getElementById('objective').value = proposal.objective || '';
+                    document.getElementById('goals').value = proposal.goals || '';
+                    document.getElementById('strategy').value = proposal.strategy || '';
+                    document.getElementById('tactics').value = proposal.tactics || '';
+                    document.getElementById('measurement').value = proposal.measurement || '';
+                    
+                    // Update word counts, progress, and feedback
+                    textareas.forEach(textarea => {
+                        updateWordCountWithGoal(textarea.id);
+                        updateSectionFeedback(textarea.id);
+                    });
+                    
+                    updateProgress();
+                    showNotification('Previous draft loaded successfully!');
+                } catch (e) {
+                    console.error('Error loading saved proposal:', e);
+                }
+            }
+            
+            // Initialize feedback for all sections
+            textareas.forEach(textarea => {
+                updateSectionFeedback(textarea.id);
+            });
+        });
+        
+        // Initialize progress bar and word counts
+        updateProgress();
+        textareas.forEach(textarea => {
+            updateWordCountWithGoal(textarea.id);
+        });
+    </script>
+
+<footer class="footer">
+    <div class="footer-content">
+        <p>Copyright 2025 Dr. Wen-Ming Yang Lab Reserved v1.2</p>
+    </div>
+</footer>
+
+</body>
+</html>
